@@ -7,100 +7,34 @@ import (
 	"unicode"
 )
 
-type Stack interface {
-	Peek() interface{}
-	Push(interface{})
-	Pop() interface{}
-	Len() int
+type Stack struct {
+	Stack []interface{}
 }
 
-type IntStack struct {
-	Stack []int64
-}
-
-func (s IntStack) Peek() interface{} {
+func (s Stack) Peek() interface{} {
 	if len(s.Stack) == 0 {
-		return int64(0)
+		return struct{}{}
 	}
 
 	return s.Stack[len(s.Stack)-1]
 }
 
-func (s *IntStack) Push(lit interface{}) {
-	s.Stack = append(s.Stack, lit.(int64))
+func (s *Stack) Push(lit interface{}) {
+	s.Stack = append(s.Stack, lit)
 }
 
-func (s *IntStack) Pop() (item interface{}) {
+func (s *Stack) Pop() (item interface{}) {
 	if len(s.Stack) == 0 {
-		return int64(0)
+		return struct{}{}
 	}
 
 	item = s.Stack[len(s.Stack)-1]
 	s.Stack = s.Stack[:len(s.Stack)-1]
+
 	return item
 }
 
-func (s IntStack) Len() int {
-	return len(s.Stack)
-}
-
-type FloatStack struct {
-	Stack []float64
-}
-
-func (s FloatStack) Peek() interface{} {
-	if len(s.Stack) == 0 {
-		return 0.0
-	}
-
-	return s.Stack[len(s.Stack)-1]
-}
-
-func (s *FloatStack) Push(lit interface{}) {
-	s.Stack = append(s.Stack, lit.(float64))
-}
-
-func (s *FloatStack) Pop() (item interface{}) {
-	if len(s.Stack) == 0 {
-		return 0.0
-	}
-
-	item = s.Stack[len(s.Stack)-1]
-	s.Stack = s.Stack[:len(s.Stack)-1]
-	return item
-}
-
-func (s FloatStack) Len() int {
-	return len(s.Stack)
-}
-
-type ExecStack struct {
-	Stack []string
-}
-
-func (s ExecStack) Peek() interface{} {
-	if len(s.Stack) == 0 {
-		return ""
-	}
-
-	return s.Stack[len(s.Stack)-1]
-}
-
-func (s *ExecStack) Push(lit interface{}) {
-	s.Stack = append(s.Stack, lit.(string))
-}
-
-func (s *ExecStack) Pop() (item interface{}) {
-	if len(s.Stack) == 0 {
-		return ""
-	}
-
-	item = s.Stack[len(s.Stack)-1]
-	s.Stack = s.Stack[:len(s.Stack)-1]
-	return item
-}
-
-func (s ExecStack) Len() int {
+func (s Stack) Len() int {
 	return len(s.Stack)
 }
 
@@ -108,18 +42,18 @@ type Options struct {
 }
 
 type Interpreter struct {
-	Stacks map[string]Stack
+	Stacks map[string]*Stack
 }
 
 var DefaultOptions = Options{}
 
 func NewInterpreter(options Options) *Interpreter {
 	interpreter := &Interpreter{
-		Stacks: make(map[string]Stack),
+		Stacks: make(map[string]*Stack),
 	}
-	interpreter.Stacks["integer"] = new(IntStack)
-	interpreter.Stacks["float"] = new(FloatStack)
-	interpreter.Stacks["exec"] = new(ExecStack)
+	interpreter.Stacks["integer"] = new(Stack)
+	interpreter.Stacks["float"] = new(Stack)
+	interpreter.Stacks["exec"] = new(Stack)
 	return interpreter
 }
 
