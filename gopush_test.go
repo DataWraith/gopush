@@ -8,7 +8,11 @@ import (
 
 func TestPushingLiterals(t *testing.T) {
 	interpreter := gopush.NewInterpreter(gopush.DefaultOptions)
-	interpreter.Run("3 3.1415926535")
+	err := interpreter.Run("3 3.1415926535")
+
+	if err != nil {
+		t.Fatalf("unexpected error: %v", err)
+	}
 
 	if interpreter.Stacks["integer"].Peek().(int64) != 3 {
 		t.Error("expected integer stack to contain 3")
