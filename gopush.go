@@ -51,9 +51,12 @@ func NewInterpreter(options Options) *Interpreter {
 	interpreter := &Interpreter{
 		Stacks: make(map[string]*Stack),
 	}
+
 	interpreter.Stacks["integer"] = new(Stack)
 	interpreter.Stacks["float"] = new(Stack)
 	interpreter.Stacks["exec"] = new(Stack)
+	interpreter.Stacks["boolean"] = new(Stack)
+
 	return interpreter
 }
 
@@ -139,6 +142,11 @@ func (i *Interpreter) Run(program string) (err error) {
 
 		if floatlit, err := strconv.ParseFloat(item, 64); err == nil {
 			i.Stacks["float"].Push(floatlit)
+			continue
+		}
+
+		if boollit, err := strconv.ParseBool(item); err == nil {
+			i.Stacks["boolean"].Push(boollit)
 			continue
 		}
 
