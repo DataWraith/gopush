@@ -2,13 +2,17 @@ package gopush
 
 import (
 	"errors"
+	"fmt"
 	"strconv"
 	"strings"
 	"unicode"
 )
 
+type Instruction func(map[string]*Stack)
+
 type Stack struct {
-	Stack []interface{}
+	Stack     []interface{}
+	Functions map[string]Instruction
 }
 
 func (s Stack) Peek() interface{} {
@@ -38,6 +42,90 @@ func (s Stack) Len() int {
 	return len(s.Stack)
 }
 
+func NewIntStack(options Options) *Stack {
+	s := &Stack{
+		Functions: make(map[string]Instruction),
+	}
+
+	s.Functions["+"] = func(stacks map[string]*Stack) {
+		if stacks["integer"].Len() < 2 {
+			return
+		}
+
+		i1 := stacks["integer"].Pop().(int64)
+		i2 := stacks["integer"].Pop().(int64)
+		stacks["integer"].Push(i1 + i2)
+	}
+
+	s.Functions["-"] = func(stacks map[string]*Stack) {
+		if stacks["integer"].Len() < 2 {
+			return
+		}
+
+		i1 := stacks["integer"].Pop().(int64)
+		i2 := stacks["integer"].Pop().(int64)
+		stacks["integer"].Push(i2 - i1)
+	}
+
+	s.Functions["*"] = func(stacks map[string]*Stack) {
+		if stacks["integer"].Len() < 2 {
+			return
+		}
+
+		i1 := stacks["integer"].Pop().(int64)
+		i2 := stacks["integer"].Pop().(int64)
+		stacks["integer"].Push(i1 * i2)
+	}
+
+	return s
+}
+
+func NewFloatStack(options Options) *Stack {
+	s := &Stack{
+		Functions: make(map[string]Instruction),
+	}
+
+	s.Functions["+"] = func(stacks map[string]*Stack) {
+		if stacks["float"].Len() < 2 {
+			return
+		}
+
+		f1 := stacks["float"].Pop().(float64)
+		f2 := stacks["float"].Pop().(float64)
+		stacks["float"].Push(f1 + f2)
+	}
+
+	s.Functions["*"] = func(stacks map[string]*Stack) {
+		if stacks["float"].Len() < 2 {
+			return
+		}
+
+		f1 := stacks["float"].Pop().(float64)
+		f2 := stacks["float"].Pop().(float64)
+		stacks["float"].Push(f1 * f2)
+	}
+
+	return s
+}
+
+func NewBooleanStack(options Options) *Stack {
+	s := &Stack{
+		Functions: make(map[string]Instruction),
+	}
+
+	s.Functions["or"] = func(stacks map[string]*Stack) {
+		if stacks["boolean"].Len() < 2 {
+			return
+		}
+
+		b1 := stacks["boolean"].Pop().(bool)
+		b2 := stacks["boolean"].Pop().(bool)
+		stacks["boolean"].Push(b1 || b2)
+	}
+
+	return s
+}
+
 type Options struct {
 }
 
@@ -52,10 +140,10 @@ func NewInterpreter(options Options) *Interpreter {
 		Stacks: make(map[string]*Stack),
 	}
 
-	interpreter.Stacks["integer"] = new(Stack)
-	interpreter.Stacks["float"] = new(Stack)
+	interpreter.Stacks["integer"] = NewIntStack(options)
+	interpreter.Stacks["float"] = NewFloatStack(options)
 	interpreter.Stacks["exec"] = new(Stack)
-	interpreter.Stacks["boolean"] = new(Stack)
+	interpreter.Stacks["boolean"] = NewBooleanStack(options)
 
 	return interpreter
 }
@@ -103,6 +191,10 @@ func splitProgram(program string) (result []string, err error) {
 		p = ignoreWhiteSpace(p)
 		t, p = getToken(p)
 
+		if t == "" {
+			continue
+		}
+
 		if t == "(" {
 			t, p, err = getToParen(p)
 			if err != nil {
@@ -132,6 +224,7 @@ func (i *Interpreter) Run(program string) (err error) {
 			for j := len(p) - 1; j >= 0; j-- {
 				i.Stacks["exec"].Push(p[j])
 			}
+			continue
 		}
 
 		// Try to parse the item on top of the exec stack as a literal
@@ -151,7 +244,26 @@ func (i *Interpreter) Run(program string) (err error) {
 		}
 
 		// Try to parse the item on top of the exec stack as instruction
-		// TODO
+		item = strings.ToLower(item)
+		if strings.Contains(item, ".") {
+			stack := item[:strings.Index(item, ".")]
+			operation := item[strings.Index(item, ".")+1:]
+
+			s, ok := i.Stacks[stack]
+			if !ok {
+				return errors.New(fmt.Sprintf("unkown stack: %v", stack))
+			}
+
+			f, ok := s.Functions[operation]
+			if !ok {
+				return errors.New(fmt.Sprintf("unknown instruction: %v.%v", stack, operation))
+			}
+
+			f(i.Stacks)
+			continue
+		}
+
+		return errors.New(fmt.Sprintf("not an instruction: %q", item))
 	}
 
 	return nil
