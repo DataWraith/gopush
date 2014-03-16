@@ -165,3 +165,19 @@ func TestSimpleExample6(t *testing.T) {
 		t.Error("expected integer stack to contain 120")
 	}
 }
+
+func TestSimpleExample7(t *testing.T) {
+	interpreter := gopush.NewInterpreter(gopush.DefaultOptions)
+
+	interpreter.Stacks["integer"].Push(int64(5))
+
+	err := interpreter.Run("( 1 INTEGER.MAX 1 EXEC.DO*RANGE INTEGER.* )")
+
+	if err != nil {
+		t.Fatalf("unexpected error: %v", err)
+	}
+
+	if interpreter.Stacks["integer"].Pop().(int64) != 120 {
+		t.Error("expected integer stack to contain 120")
+	}
+}

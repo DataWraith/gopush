@@ -93,7 +93,7 @@ func NewInterpreter(options Options) *Interpreter {
 
 	interpreter.Stacks["integer"] = NewIntStack(interpreter)
 	interpreter.Stacks["float"] = NewFloatStack(interpreter)
-	interpreter.Stacks["exec"] = new(Stack)
+	interpreter.Stacks["exec"] = NewExecStack(interpreter)
 	interpreter.Stacks["code"] = NewCodeStack(interpreter)
 	interpreter.Stacks["name"] = new(Stack)
 	interpreter.Stacks["boolean"] = NewBooleanStack(interpreter)
