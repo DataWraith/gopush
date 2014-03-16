@@ -11,6 +11,18 @@ type Code struct {
 	List    []Code
 }
 
+func (c Code) String() string {
+	if c.Literal != "" {
+		return c.Literal
+	}
+
+	s := "( "
+	for _, v := range c.List {
+		s += v.String() + " "
+	}
+	return s + ")"
+}
+
 func ignoreWhiteSpace(program string) string {
 	for i, r := range program {
 		if !unicode.IsSpace(r) {

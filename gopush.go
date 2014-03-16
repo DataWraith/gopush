@@ -65,6 +65,7 @@ type Interpreter struct {
 	Options     Options
 	Rand        *rand.Rand
 	Definitions map[string]Definition
+	numEvalPush int
 }
 
 var DefaultOptions = Options{
@@ -87,6 +88,7 @@ func NewInterpreter(options Options) *Interpreter {
 		Options:     options,
 		Rand:        rand.New(rand.NewSource(options.RandomSeed)),
 		Definitions: make(map[string]Definition),
+		numEvalPush: 0,
 	}
 
 	interpreter.Stacks["integer"] = NewIntStack(interpreter)
@@ -112,23 +114,13 @@ func (i *Interpreter) stackOK(name string, mindepth int64) bool {
 	return true
 }
 
-func (i *Interpreter) Run(program string) error {
-	c, err := ParseCode(program)
-	if err != nil {
-		return err
-	}
+func (i *Interpreter) runCode(program Code) error {
+	i.Stacks["exec"].Push(program)
 
-	i.Stacks["exec"].Push(c)
+	for i.Stacks["exec"].Len() > 0 && i.numEvalPush < i.Options.EvalPushLimit {
 
-	if i.Options.TopLevelPushCode {
-		i.Stacks["code"].Push(c)
-	}
-
-	numEvalPush := 0
-
-	for i.Stacks["exec"].Len() > 0 && numEvalPush < i.Options.EvalPushLimit {
 		item := i.Stacks["exec"].Pop().(Code)
-		numEvalPush++
+		i.numEvalPush++
 
 		// If the item on top of the exec stack is a list, push it in
 		// reverse order
@@ -187,9 +179,28 @@ func (i *Interpreter) Run(program string) error {
 		i.Stacks["name"].Push(strings.ToLower(item.Literal))
 	}
 
+	if i.numEvalPush >= i.Options.EvalPushLimit {
+		return errors.New("EvalPushLimit exceeded")
+	}
+
+	return nil
+}
+
+func (i *Interpreter) Run(program string) error {
+	c, err := ParseCode(program)
+	if err != nil {
+		return err
+	}
+
+	if i.Options.TopLevelPushCode {
+		i.Stacks["code"].Push(c)
+	}
+
+	err = i.runCode(c)
+
 	if i.Options.TopLevelPopCode {
 		i.Stacks["code"].Pop()
 	}
 
-	return nil
+	return err
 }

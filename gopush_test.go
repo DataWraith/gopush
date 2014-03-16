@@ -101,3 +101,51 @@ func TestSimpleExample4(t *testing.T) {
 		t.Error("expected integer stack to contain 2")
 	}
 }
+
+func TestSimpleExample5(t *testing.T) {
+	interpreter := gopush.NewInterpreter(gopush.DefaultOptions)
+
+	interpreter.Stacks["integer"].Push(int64(0))
+
+	err := interpreter.Run(`( CODE.QUOTE ( INTEGER.POP 1 )
+				  CODE.QUOTE ( CODE.DUP INTEGER.DUP 1 INTEGER.- CODE.DO INTEGER.* )
+				  INTEGER.DUP 2 INTEGER.< CODE.IF )`)
+
+	if err != nil {
+		t.Fatalf("unexpected error: %v", err)
+	}
+
+	if interpreter.Stacks["integer"].Pop().(int64) != 1 {
+		t.Error("expected integer stack to contain 1")
+	}
+
+	interpreter = gopush.NewInterpreter(gopush.DefaultOptions)
+	interpreter.Stacks["integer"].Push(int64(3))
+
+	err = interpreter.Run(`( CODE.QUOTE ( INTEGER.POP 1 )
+				  CODE.QUOTE ( CODE.DUP INTEGER.DUP 1 INTEGER.- CODE.DO INTEGER.* )
+				  INTEGER.DUP 2 INTEGER.< CODE.IF )`)
+
+	if err != nil {
+		t.Fatalf("unexpected error: %v", err)
+	}
+
+	if interpreter.Stacks["integer"].Pop().(int64) != 6 {
+		t.Error("expected integer stack to contain 6")
+	}
+
+	interpreter = gopush.NewInterpreter(gopush.DefaultOptions)
+	interpreter.Stacks["integer"].Push(int64(5))
+
+	err = interpreter.Run(`( CODE.QUOTE ( INTEGER.POP 1 )
+				  CODE.QUOTE ( CODE.DUP INTEGER.DUP 1 INTEGER.- CODE.DO INTEGER.* )
+				  INTEGER.DUP 2 INTEGER.< CODE.IF )`)
+
+	if err != nil {
+		t.Fatalf("unexpected error: %v", err)
+	}
+
+	if interpreter.Stacks["integer"].Pop().(int64) != 120 {
+		t.Error("expected integer stack to contain 120")
+	}
+}
