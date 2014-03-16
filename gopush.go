@@ -3,12 +3,57 @@ package gopush
 import (
 	"errors"
 	"fmt"
+	"math/rand"
 	"strconv"
 	"strings"
 	"unicode"
 )
 
 type Options struct {
+	// When TRUE (which is the default), code passed to the top level of
+	// the interpreter will be pushed onto the CODE stack prior to
+	// execution.
+	TopLevelPushCode bool
+
+	// When TRUE, the CODE stack will be popped at the end of top level
+	// calls to the interpreter. The default is FALSE.
+	TopLevelPopCode bool
+
+	// The maximum number of points that will be executed in a single
+	// top-level call to the interpreter.
+	EvalPushLimit int
+
+	// The probability that the selection of the ephemeral random NAME
+	// constant for inclusion in randomly generated code will produce a new
+	// name (rather than a name that was previously generated).
+	NewERCNameProbabilty float64
+
+	// The maximum number of points that can occur in any program on the
+	// CODE stack. Instructions that would violate this limit act as NOOPs.
+	MaxPointsInProgram int
+
+	// The maximum number of points in an expression produced by the
+	// CODE.RAND instruction.
+	MaxPointsInRandomExpression int
+
+	// The maximum FLOAT that will be produced as an ephemeral random FLOAT
+	// constant or from a call to FLOAT.RAND.
+	MaxRandomFloat float64
+
+	// The minimum FLOAT that will be produced as an ephemeral random FLOAT
+	// constant or from a call to FLOAT.RAND.
+	MinRandomFloat float64
+
+	// The maximum INTEGER that will be produced as an ephemeral random
+	// INTEGER constant or from a call to INTEGER.RAND.
+	MaxRandomInteger int64
+
+	// The minimum INTEGER that will be produced as an ephemeral random
+	// INTEGER constant or from a call to INTEGER.RAND.
+	MinRandomInteger int64
+
+	// A seed for the random number generator.
+	RandomSeed int64
 }
 
 type Interpreter struct {
@@ -16,7 +61,19 @@ type Interpreter struct {
 	Options Options
 }
 
-var DefaultOptions = Options{}
+var DefaultOptions = Options{
+	TopLevelPushCode:            true,
+	TopLevelPopCode:             false,
+	EvalPushLimit:               1000,
+	NewERCNameProbabilty:        0.001,
+	MaxPointsInProgram:          100,
+	MaxPointsInRandomExpression: 25,
+	MaxRandomFloat:              1.0,
+	MinRandomFloat:              -1.0,
+	MaxRandomInteger:            10,
+	MinRandomInteger:            -10,
+	RandomSeed:                  rand.Int63(),
+}
 
 func NewInterpreter(options Options) *Interpreter {
 	interpreter := &Interpreter{
@@ -95,8 +152,11 @@ func splitProgram(program string) (result []string, err error) {
 func (i *Interpreter) Run(program string) (err error) {
 	i.Stacks["exec"].Push(strings.TrimSpace(program))
 
-	for i.Stacks["exec"].Len() > 0 {
+	numEvalPush := 0
+
+	for i.Stacks["exec"].Len() > 0 && numEvalPush < i.Options.EvalPushLimit {
 		item := i.Stacks["exec"].Pop().(string)
+		numEvalPush++
 
 		// If the item on top of the exec stack is a list, push it in
 		// reverse order
