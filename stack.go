@@ -1,6 +1,6 @@
 package gopush
 
-type Instruction func(map[string]*Stack)
+type Instruction func()
 
 type Stack struct {
 	Stack     []interface{}

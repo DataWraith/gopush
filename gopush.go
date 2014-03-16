@@ -81,10 +81,10 @@ func NewInterpreter(options Options) *Interpreter {
 		Options: options,
 	}
 
-	interpreter.Stacks["integer"] = NewIntStack(options)
-	interpreter.Stacks["float"] = NewFloatStack(options)
+	interpreter.Stacks["integer"] = NewIntStack(interpreter)
+	interpreter.Stacks["float"] = NewFloatStack(interpreter)
 	interpreter.Stacks["exec"] = new(Stack)
-	interpreter.Stacks["boolean"] = NewBooleanStack(options)
+	interpreter.Stacks["boolean"] = NewBooleanStack(interpreter)
 
 	return interpreter
 }
@@ -195,15 +195,15 @@ func (i *Interpreter) Run(program string) (err error) {
 
 			s, ok := i.Stacks[stack]
 			if !ok {
-				return errors.New(fmt.Sprintf("unkown stack: %v", stack))
+				return errors.New(fmt.Sprintf("unkown or disabled stack: %v", stack))
 			}
 
 			f, ok := s.Functions[operation]
 			if !ok {
-				return errors.New(fmt.Sprintf("unknown instruction: %v.%v", stack, operation))
+				return errors.New(fmt.Sprintf("unknown or disabled instruction: %v.%v", stack, operation))
 			}
 
-			f(i.Stacks)
+			f()
 			continue
 		}
 
