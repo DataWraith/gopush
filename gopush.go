@@ -55,10 +55,16 @@ type Options struct {
 	RandomSeed int64
 }
 
+type Definition struct {
+	Stack string
+	Value interface{}
+}
+
 type Interpreter struct {
-	Stacks  map[string]*Stack
-	Options Options
-	Rand    *rand.Rand
+	Stacks      map[string]*Stack
+	Options     Options
+	Rand        *rand.Rand
+	Definitions map[string]Definition
 }
 
 var DefaultOptions = Options{
@@ -77,14 +83,17 @@ var DefaultOptions = Options{
 
 func NewInterpreter(options Options) *Interpreter {
 	interpreter := &Interpreter{
-		Stacks:  make(map[string]*Stack),
-		Options: options,
-		Rand:    rand.New(rand.NewSource(options.RandomSeed)),
+		Stacks:      make(map[string]*Stack),
+		Options:     options,
+		Rand:        rand.New(rand.NewSource(options.RandomSeed)),
+		Definitions: make(map[string]Definition),
 	}
 
 	interpreter.Stacks["integer"] = NewIntStack(interpreter)
 	interpreter.Stacks["float"] = NewFloatStack(interpreter)
 	interpreter.Stacks["exec"] = new(Stack)
+	interpreter.Stacks["code"] = NewCodeStack(interpreter)
+	interpreter.Stacks["name"] = new(Stack)
 	interpreter.Stacks["boolean"] = NewBooleanStack(interpreter)
 
 	return interpreter
@@ -161,7 +170,17 @@ func (i *Interpreter) Run(program string) error {
 			continue
 		}
 
-		return errors.New(fmt.Sprintf("not an instruction: %q", item))
+		// If the item is not an instruction, it must be a name, either
+		// bound or unbound. First we check for bound names.
+		d, ok := i.Definitions[strings.ToLower(item.Literal)]
+		if ok {
+			// Name is already bound, push the bound value onto the appropriate stack
+			i.Stacks[d.Stack].Push(d.Value)
+			continue
+		}
+
+		// The item is not bound yet, so push it onto the name stack
+		i.Stacks["name"].Push(strings.ToLower(item.Literal))
 	}
 
 	return nil

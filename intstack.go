@@ -35,5 +35,9 @@ func NewIntStack(interpreter *Interpreter) *Stack {
 		interpreter.Stacks["integer"].Push(i1 * i2)
 	}
 
+	s.Functions["dup"] = func() {
+		interpreter.Stacks["integer"].Dup()
+	}
+
 	return s
 }

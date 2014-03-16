@@ -75,3 +75,29 @@ func TestSimpleExample2(t *testing.T) {
 		t.Error("expected integer stack to contain 1")
 	}
 }
+
+func TestSimpleExample3(t *testing.T) {
+	interpreter := gopush.NewInterpreter(gopush.DefaultOptions)
+	err := interpreter.Run("5 ( INTEGER.DUP INTEGER.+ )")
+
+	if err != nil {
+		t.Fatalf("unexpected error: %v", err)
+	}
+
+	if interpreter.Stacks["integer"].Pop().(int64) != 10 {
+		t.Error("expected integer stack to contain 10")
+	}
+}
+
+func TestSimpleExample4(t *testing.T) {
+	interpreter := gopush.NewInterpreter(gopush.DefaultOptions)
+	err := interpreter.Run("( DOUBLE CODE.QUOTE ( INTEGER.DUP INTEGER.+ ) CODE.DEFINE ) 1 DOUBLE")
+
+	if err != nil {
+		t.Fatalf("unexpected error: %v", err)
+	}
+
+	if interpreter.Stacks["integer"].Pop().(int64) != 2 {
+		t.Error("expected integer stack to contain 2")
+	}
+}
