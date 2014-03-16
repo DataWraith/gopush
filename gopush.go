@@ -120,6 +120,10 @@ func (i *Interpreter) Run(program string) error {
 
 	i.Stacks["exec"].Push(c)
 
+	if i.Options.TopLevelPushCode {
+		i.Stacks["code"].Push(c)
+	}
+
 	numEvalPush := 0
 
 	for i.Stacks["exec"].Len() > 0 && numEvalPush < i.Options.EvalPushLimit {
@@ -181,6 +185,10 @@ func (i *Interpreter) Run(program string) error {
 
 		// The item is not bound yet, so push it onto the name stack
 		i.Stacks["name"].Push(strings.ToLower(item.Literal))
+	}
+
+	if i.Options.TopLevelPopCode {
+		i.Stacks["code"].Pop()
 	}
 
 	return nil
