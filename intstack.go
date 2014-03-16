@@ -49,6 +49,20 @@ func NewIntStack(interpreter *Interpreter) *Stack {
 		interpreter.Stacks["integer"].Dup()
 	}
 
+	s.Functions["max"] = func() {
+		if !interpreter.stackOK("integer", 2) {
+			return
+		}
+
+		i1 := interpreter.Stacks["integer"].Pop().(int64)
+		i2 := interpreter.Stacks["integer"].Pop().(int64)
+		if i1 > i2 {
+			interpreter.Stacks["integer"].Push(i1)
+		} else {
+			interpreter.Stacks["integer"].Push(i2)
+		}
+	}
+
 	s.Functions["pop"] = func() {
 		interpreter.Stacks["integer"].Pop()
 	}

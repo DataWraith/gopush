@@ -114,11 +114,20 @@ func (i *Interpreter) stackOK(name string, mindepth int64) bool {
 	return true
 }
 
+func (i *Interpreter) printStacks() {
+	for k, v := range i.Stacks {
+		fmt.Printf("%s:\n", k)
+		for i := len(v.Stack) - 1; i >= 0; i-- {
+			fmt.Printf("- %v\n", v.Stack[i])
+		}
+	}
+	fmt.Println()
+}
+
 func (i *Interpreter) runCode(program Code) error {
 	i.Stacks["exec"].Push(program)
 
 	for i.Stacks["exec"].Len() > 0 && i.numEvalPush < i.Options.EvalPushLimit {
-
 		item := i.Stacks["exec"].Pop().(Code)
 		i.numEvalPush++
 

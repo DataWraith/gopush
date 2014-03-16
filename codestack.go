@@ -26,6 +26,36 @@ func NewCodeStack(interpreter *Interpreter) *Stack {
 		interpreter.Stacks["code"].Pop()
 	}
 
+	s.Functions["do*range"] = func() {
+		if !interpreter.stackOK("code", 1) || !interpreter.stackOK("integer", 2) {
+			return
+		}
+
+		c := interpreter.Stacks["code"].Pop().(Code)
+		dst := interpreter.Stacks["integer"].Pop().(int64)
+		cur := interpreter.Stacks["integer"].Pop().(int64)
+
+		if cur == dst {
+			interpreter.Stacks["integer"].Push(cur)
+			interpreter.Stacks["exec"].Push(c)
+		} else {
+			interpreter.Stacks["integer"].Push(cur)
+
+			if dst < cur {
+				cur--
+			} else {
+				cur++
+			}
+
+			interpreter.Stacks["code"].Push(c)
+			interpreter.Stacks["exec"].Push(c)
+			interpreter.Stacks["exec"].Push(Code{Length: 1, Literal: "CODE.DO*RANGE"})
+			interpreter.Stacks["integer"].Push(cur)
+			interpreter.Stacks["integer"].Push(dst)
+		}
+
+	}
+
 	s.Functions["dup"] = func() {
 		interpreter.Stacks["code"].Dup()
 	}
