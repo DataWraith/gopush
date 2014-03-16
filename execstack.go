@@ -32,7 +32,22 @@ func NewExecStack(interpreter *Interpreter) *Stack {
 			interpreter.Stacks["exec"].Push(c)
 			interpreter.Stacks["exec"].Push(Code{Length: 1, Literal: "EXEC.DO*RANGE"})
 		}
+	}
 
+	s.Functions["if"] = func() {
+		if !interpreter.stackOK("exec", 2) || !interpreter.stackOK("boolean", 1) {
+			return
+		}
+
+		b := interpreter.Stacks["boolean"].Pop().(bool)
+		c1 := interpreter.Stacks["exec"].Pop().(Code)
+		c2 := interpreter.Stacks["exec"].Pop().(Code)
+
+		if b {
+			interpreter.Stacks["exec"].Push(c1)
+		} else {
+			interpreter.Stacks["exec"].Push(c2)
+		}
 	}
 
 	return s

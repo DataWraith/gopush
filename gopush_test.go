@@ -181,3 +181,41 @@ func TestSimpleExample7(t *testing.T) {
 		t.Error("expected integer stack to contain 120")
 	}
 }
+
+func TestSimpleExample8(t *testing.T) {
+	interpreter := gopush.NewInterpreter(gopush.DefaultOptions)
+
+	interpreter.Stacks["integer"].Push(int64(2))
+	interpreter.Stacks["integer"].Push(int64(8))
+	interpreter.Stacks["float"].Push(3.141)
+	interpreter.Stacks["float"].Push(2.718)
+
+	err := interpreter.Run("( INTEGER.= CODE.QUOTE FLOAT.* CODE.QUOTE FLOAT./ CODE.IF )")
+
+	if err != nil {
+		t.Fatalf("unexpected error: %v", err)
+	}
+
+	if interpreter.Stacks["float"].Pop().(float64) != 3.141/2.718 {
+		t.Errorf("expected float stack to contain %v", 3.141/2.718)
+	}
+}
+
+func TestSimpleExample9(t *testing.T) {
+	interpreter := gopush.NewInterpreter(gopush.DefaultOptions)
+
+	interpreter.Stacks["integer"].Push(int64(3))
+	interpreter.Stacks["integer"].Push(int64(3))
+	interpreter.Stacks["float"].Push(3.141)
+	interpreter.Stacks["float"].Push(2.718)
+
+	err := interpreter.Run("( INTEGER.= EXEC.IF FLOAT.* FLOAT./)")
+
+	if err != nil {
+		t.Fatalf("unexpected error: %v", err)
+	}
+
+	if interpreter.Stacks["float"].Pop().(float64) != 3.141*2.718 {
+		t.Errorf("expected float stack to contain %v", 3.141*2.718)
+	}
+}
