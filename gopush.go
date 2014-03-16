@@ -6,7 +6,6 @@ import (
 	"math/rand"
 	"strconv"
 	"strings"
-	"unicode"
 )
 
 type Options struct {
@@ -91,66 +90,6 @@ func NewInterpreter(options Options) *Interpreter {
 	return interpreter
 }
 
-func ignoreWhiteSpace(program string) string {
-	for i, r := range program {
-		if !unicode.IsSpace(r) {
-			return program[i:]
-		}
-	}
-	return ""
-}
-
-func getToken(program string) (token, remainder string) {
-	for i, r := range program {
-		if unicode.IsSpace(r) {
-			return program[:i], program[i:]
-		}
-	}
-	return program, ""
-}
-
-func getToParen(program string) (subprogram, remainder string, err error) {
-	parenBalance := 1
-	for i, r := range program {
-		switch r {
-		case '(':
-			parenBalance++
-		case ')':
-			parenBalance--
-		}
-
-		if parenBalance == 0 {
-			return program[:i], program[i+1:], nil
-		}
-	}
-	return "", "", errors.New("unmatched parentheses")
-}
-
-func splitProgram(program string) (result []string, err error) {
-	var p, t string
-
-	p = program
-	for len(p) > 0 {
-		p = ignoreWhiteSpace(p)
-		t, p = getToken(p)
-
-		if t == "" {
-			continue
-		}
-
-		if t == "(" {
-			t, p, err = getToParen(p)
-			if err != nil {
-				return []string{}, err
-			}
-		}
-
-		result = append(result, t)
-	}
-
-	return result, nil
-}
-
 func (i *Interpreter) stackOK(name string, mindepth int64) bool {
 	s, ok := i.Stacks[name]
 	if !ok {
@@ -164,49 +103,49 @@ func (i *Interpreter) stackOK(name string, mindepth int64) bool {
 	return true
 }
 
-func (i *Interpreter) Run(program string) (err error) {
-	i.Stacks["exec"].Push(strings.TrimSpace(program))
+func (i *Interpreter) Run(program string) error {
+	c, err := ParseCode(program)
+	if err != nil {
+		return err
+	}
+
+	i.Stacks["exec"].Push(c)
 
 	numEvalPush := 0
 
 	for i.Stacks["exec"].Len() > 0 && numEvalPush < i.Options.EvalPushLimit {
-		item := i.Stacks["exec"].Pop().(string)
+		item := i.Stacks["exec"].Pop().(Code)
 		numEvalPush++
 
 		// If the item on top of the exec stack is a list, push it in
 		// reverse order
-		if strings.Contains(item, " ") {
-			p, err := splitProgram(item)
-			if err != nil {
-				return err
-			}
-			for j := len(p) - 1; j >= 0; j-- {
-				i.Stacks["exec"].Push(p[j])
+		if item.Literal == "" {
+			for j := len(item.List) - 1; j >= 0; j-- {
+				i.Stacks["exec"].Push(item.List[j])
 			}
 			continue
 		}
 
 		// Try to parse the item on top of the exec stack as a literal
-		if intlit, err := strconv.ParseInt(item, 10, 64); err == nil {
+		if intlit, err := strconv.ParseInt(item.Literal, 10, 64); err == nil {
 			i.Stacks["integer"].Push(intlit)
 			continue
 		}
 
-		if floatlit, err := strconv.ParseFloat(item, 64); err == nil {
+		if floatlit, err := strconv.ParseFloat(item.Literal, 64); err == nil {
 			i.Stacks["float"].Push(floatlit)
 			continue
 		}
 
-		if boollit, err := strconv.ParseBool(item); err == nil {
+		if boollit, err := strconv.ParseBool(item.Literal); err == nil {
 			i.Stacks["boolean"].Push(boollit)
 			continue
 		}
 
 		// Try to parse the item on top of the exec stack as instruction
-		item = strings.ToLower(item)
-		if strings.Contains(item, ".") {
-			stack := item[:strings.Index(item, ".")]
-			operation := item[strings.Index(item, ".")+1:]
+		if strings.Contains(item.Literal, ".") {
+			stack := strings.ToLower(item.Literal[:strings.Index(item.Literal, ".")])
+			operation := strings.ToLower(item.Literal[strings.Index(item.Literal, ".")+1:])
 
 			s, ok := i.Stacks[stack]
 			if !ok {
