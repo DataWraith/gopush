@@ -59,6 +59,7 @@ type Options struct {
 type Interpreter struct {
 	Stacks  map[string]*Stack
 	Options Options
+	Rand    *rand.Rand
 }
 
 var DefaultOptions = Options{
@@ -79,6 +80,7 @@ func NewInterpreter(options Options) *Interpreter {
 	interpreter := &Interpreter{
 		Stacks:  make(map[string]*Stack),
 		Options: options,
+		Rand:    rand.New(rand.NewSource(options.RandomSeed)),
 	}
 
 	interpreter.Stacks["integer"] = NewIntStack(interpreter)
@@ -147,6 +149,19 @@ func splitProgram(program string) (result []string, err error) {
 	}
 
 	return result, nil
+}
+
+func (i *Interpreter) stackOK(name string, mindepth int64) bool {
+	s, ok := i.Stacks[name]
+	if !ok {
+		return false
+	}
+
+	if s.Len() < mindepth {
+		return false
+	}
+
+	return true
 }
 
 func (i *Interpreter) Run(program string) (err error) {

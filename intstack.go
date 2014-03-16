@@ -6,7 +6,7 @@ func NewIntStack(interpreter *Interpreter) *Stack {
 	}
 
 	s.Functions["+"] = func() {
-		if interpreter.Stacks["integer"].Len() < 2 {
+		if !interpreter.stackOK("integer", 2) {
 			return
 		}
 
@@ -16,7 +16,7 @@ func NewIntStack(interpreter *Interpreter) *Stack {
 	}
 
 	s.Functions["-"] = func() {
-		if interpreter.Stacks["integer"].Len() < 2 {
+		if !interpreter.stackOK("integer", 2) {
 			return
 		}
 
@@ -26,7 +26,7 @@ func NewIntStack(interpreter *Interpreter) *Stack {
 	}
 
 	s.Functions["*"] = func() {
-		if interpreter.Stacks["integer"].Len() < 2 {
+		if !interpreter.stackOK("integer", 2) {
 			return
 		}
 

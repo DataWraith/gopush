@@ -12,7 +12,7 @@ func NewFloatStack(interpreter *Interpreter) *Stack {
 	}
 
 	s.Functions["*"] = func() {
-		if interpreter.Stacks["float"].Len() < 2 {
+		if !interpreter.stackOK("float", 2) {
 			return
 		}
 
@@ -22,7 +22,7 @@ func NewFloatStack(interpreter *Interpreter) *Stack {
 	}
 
 	s.Functions["+"] = func() {
-		if interpreter.Stacks["float"].Len() < 2 {
+		if !interpreter.stackOK("float", 2) {
 			return
 		}
 
@@ -32,7 +32,7 @@ func NewFloatStack(interpreter *Interpreter) *Stack {
 	}
 
 	s.Functions["-"] = func() {
-		if interpreter.Stacks["float"].Len() < 2 {
+		if !interpreter.stackOK("float", 2) {
 			return
 		}
 
@@ -42,7 +42,7 @@ func NewFloatStack(interpreter *Interpreter) *Stack {
 	}
 
 	s.Functions["/"] = func() {
-		if interpreter.Stacks["float"].Len() < 2 || interpreter.Stacks["float"].Peek().(float64) == 0 {
+		if !interpreter.stackOK("float", 2) || interpreter.Stacks["float"].Peek().(float64) == 0 {
 			return
 		}
 
@@ -52,7 +52,7 @@ func NewFloatStack(interpreter *Interpreter) *Stack {
 	}
 
 	s.Functions["<"] = func() {
-		if interpreter.Stacks["float"].Len() < 2 {
+		if !interpreter.stackOK("float", 2) {
 			return
 		}
 
@@ -62,7 +62,7 @@ func NewFloatStack(interpreter *Interpreter) *Stack {
 	}
 
 	s.Functions["="] = func() {
-		if interpreter.Stacks["float"].Len() < 2 {
+		if !interpreter.stackOK("float", 2) {
 			return
 		}
 
@@ -72,7 +72,7 @@ func NewFloatStack(interpreter *Interpreter) *Stack {
 	}
 
 	s.Functions[">"] = func() {
-		if interpreter.Stacks["float"].Len() < 2 {
+		if !interpreter.stackOK("float", 2) {
 			return
 		}
 
@@ -82,7 +82,7 @@ func NewFloatStack(interpreter *Interpreter) *Stack {
 	}
 
 	s.Functions["cos"] = func() {
-		if interpreter.Stacks["float"].Len() == 0 {
+		if !interpreter.stackOK("float", 1) {
 			return
 		}
 
@@ -103,7 +103,7 @@ func NewFloatStack(interpreter *Interpreter) *Stack {
 	}
 
 	s.Functions["fromboolean"] = func() {
-		if interpreter.Stacks["boolean"].Len() == 0 {
+		if !interpreter.stackOK("boolean", 1) {
 			return
 		}
 
@@ -116,7 +116,7 @@ func NewFloatStack(interpreter *Interpreter) *Stack {
 	}
 
 	s.Functions["frominteger"] = func() {
-		if interpreter.Stacks["integer"].Len() == 0 {
+		if !interpreter.stackOK("integer", 1) {
 			return
 		}
 
@@ -125,7 +125,7 @@ func NewFloatStack(interpreter *Interpreter) *Stack {
 	}
 
 	s.Functions["max"] = func() {
-		if interpreter.Stacks["float"].Len() < 2 {
+		if !interpreter.stackOK("float", 2) {
 			return
 		}
 
@@ -135,7 +135,7 @@ func NewFloatStack(interpreter *Interpreter) *Stack {
 	}
 
 	s.Functions["min"] = func() {
-		if interpreter.Stacks["float"].Len() < 2 {
+		if !interpreter.stackOK("float", 2) {
 			return
 		}
 
@@ -157,7 +157,7 @@ func NewFloatStack(interpreter *Interpreter) *Stack {
 	}
 
 	s.Functions["shove"] = func() {
-		if interpreter.Stacks["float"].Len() == 0 || interpreter.Stacks["integer"].Len() == 0 {
+		if !interpreter.stackOK("float", 1) || !interpreter.stackOK("integer", 1) {
 			return
 		}
 
@@ -167,7 +167,7 @@ func NewFloatStack(interpreter *Interpreter) *Stack {
 	}
 
 	s.Functions["sin"] = func() {
-		if interpreter.Stacks["float"].Len() == 0 {
+		if !interpreter.stackOK("float", 1) {
 			return
 		}
 
@@ -176,6 +176,10 @@ func NewFloatStack(interpreter *Interpreter) *Stack {
 	}
 
 	s.Functions["stackdepth"] = func() {
+		if !interpreter.stackOK("integer", 0) {
+			return
+		}
+
 		interpreter.Stacks["integer"].Push(interpreter.Stacks["float"].Len())
 	}
 
@@ -184,7 +188,7 @@ func NewFloatStack(interpreter *Interpreter) *Stack {
 	}
 
 	s.Functions["tan"] = func() {
-		if interpreter.Stacks["float"].Len() == 0 {
+		if !interpreter.stackOK("float", 1) {
 			return
 		}
 
@@ -193,7 +197,7 @@ func NewFloatStack(interpreter *Interpreter) *Stack {
 	}
 
 	s.Functions["yank"] = func() {
-		if interpreter.Stacks["integer"].Len() == 0 {
+		if !interpreter.stackOK("integer", 1) {
 			return
 		}
 
@@ -202,7 +206,7 @@ func NewFloatStack(interpreter *Interpreter) *Stack {
 	}
 
 	s.Functions["yankdup"] = func() {
-		if interpreter.Stacks["integer"].Len() == 0 {
+		if !interpreter.stackOK("integer", 1) {
 			return
 		}
 

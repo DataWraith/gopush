@@ -1,14 +1,12 @@
 package gopush
 
-import "math/rand"
-
 func NewBooleanStack(interpreter *Interpreter) *Stack {
 	s := &Stack{
 		Functions: make(map[string]Instruction),
 	}
 
 	s.Functions["="] = func() {
-		if interpreter.Stacks["boolean"].Len() < 2 {
+		if !interpreter.stackOK("boolean", 2) {
 			return
 		}
 
@@ -18,7 +16,7 @@ func NewBooleanStack(interpreter *Interpreter) *Stack {
 	}
 
 	s.Functions["and"] = func() {
-		if interpreter.Stacks["boolean"].Len() < 2 {
+		if !interpreter.stackOK("boolean", 2) {
 			return
 		}
 
@@ -41,7 +39,7 @@ func NewBooleanStack(interpreter *Interpreter) *Stack {
 	}
 
 	s.Functions["fromfloat"] = func() {
-		if interpreter.Stacks["float"].Len() == 0 {
+		if !interpreter.stackOK("float", 1) {
 			return
 		}
 
@@ -50,7 +48,7 @@ func NewBooleanStack(interpreter *Interpreter) *Stack {
 	}
 
 	s.Functions["frominteger"] = func() {
-		if interpreter.Stacks["integer"].Len() == 0 {
+		if !interpreter.stackOK("integer", 1) {
 			return
 		}
 
@@ -59,7 +57,7 @@ func NewBooleanStack(interpreter *Interpreter) *Stack {
 	}
 
 	s.Functions["not"] = func() {
-		if interpreter.Stacks["boolean"].Len() == 0 {
+		if !interpreter.stackOK("boolean", 1) {
 			return
 		}
 
@@ -68,7 +66,7 @@ func NewBooleanStack(interpreter *Interpreter) *Stack {
 	}
 
 	s.Functions["or"] = func() {
-		if interpreter.Stacks["boolean"].Len() < 2 {
+		if !interpreter.stackOK("boolean", 2) {
 			return
 		}
 
@@ -82,7 +80,7 @@ func NewBooleanStack(interpreter *Interpreter) *Stack {
 	}
 
 	s.Functions["rand"] = func() {
-		interpreter.Stacks["boolean"].Push(rand.Float64() < 0.5)
+		interpreter.Stacks["boolean"].Push(interpreter.Rand.Float64() < 0.5)
 	}
 
 	s.Functions["rot"] = func() {
@@ -90,14 +88,20 @@ func NewBooleanStack(interpreter *Interpreter) *Stack {
 	}
 
 	s.Functions["shove"] = func() {
-		if interpreter.Stacks["boolean"].Len() == 0 || interpreter.Stacks["integer"].Len() == 0 {
+		if !interpreter.stackOK("boolean", 1) || !interpreter.stackOK("integer", 1) {
 			return
 		}
 
-		interpreter.Stacks["boolean"].Shove(interpreter.Stacks["boolean"].Pop(), interpreter.Stacks["integer"].Pop().(int64))
+		b := interpreter.Stacks["boolean"].Pop().(bool)
+		i := interpreter.Stacks["integer"].Pop().(int64)
+		interpreter.Stacks["boolean"].Shove(b, i)
 	}
 
 	s.Functions["stackdepth"] = func() {
+		if !interpreter.stackOK("integer", 0) {
+			return
+		}
+
 		interpreter.Stacks["integer"].Push(interpreter.Stacks["boolean"].Len())
 	}
 
@@ -106,19 +110,21 @@ func NewBooleanStack(interpreter *Interpreter) *Stack {
 	}
 
 	s.Functions["yank"] = func() {
-		if interpreter.Stacks["integer"].Len() == 0 {
+		if !interpreter.stackOK("integer", 1) {
 			return
 		}
 
-		interpreter.Stacks["boolean"].Yank(interpreter.Stacks["integer"].Pop().(int64))
+		i := interpreter.Stacks["integer"].Pop().(int64)
+		interpreter.Stacks["boolean"].Yank(i)
 	}
 
 	s.Functions["yankdup"] = func() {
-		if interpreter.Stacks["integer"].Len() == 0 {
+		if !interpreter.stackOK("integer", 1) {
 			return
 		}
 
-		interpreter.Stacks["boolean"].YankDup(interpreter.Stacks["integer"].Pop().(int64))
+		i := interpreter.Stacks["integer"].Pop().(int64)
+		interpreter.Stacks["boolean"].YankDup(i)
 	}
 
 	return s
