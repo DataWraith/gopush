@@ -131,7 +131,18 @@ func (i *Interpreter) printInterpreterState() {
 	fmt.Println()
 }
 
-func (i *Interpreter) runCode(program Code) error {
+func (i *Interpreter) runCode(program Code) (err error) {
+
+	// Recover from a panic that could occur while executing an
+	// instruction. Because it is more convenient for functions to not
+	// return an error, the functions that want to return an error panic
+	// instead.
+	defer func() {
+		if perr := recover(); perr != nil {
+			err = perr.(error)
+		}
+	}()
+
 	i.Stacks["exec"].Push(program)
 
 	for i.Stacks["exec"].Len() > 0 && i.numEvalPush < i.Options.EvalPushLimit {

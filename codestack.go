@@ -22,7 +22,12 @@ func NewCodeStack(interpreter *Interpreter) *Stack {
 		}
 
 		c := interpreter.Stacks["code"].Pop().(Code)
-		interpreter.runCode(c)
+
+		err := interpreter.runCode(c)
+		if err != nil {
+			panic(err)
+		}
+
 		interpreter.Stacks["code"].Pop()
 	}
 
