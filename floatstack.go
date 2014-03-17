@@ -52,7 +52,7 @@ func NewFloatStack(interpreter *Interpreter) *Stack {
 	}
 
 	s.Functions["<"] = func() {
-		if !interpreter.stackOK("float", 2) {
+		if !interpreter.stackOK("float", 2) || !interpreter.stackOK("boolean", 0) {
 			return
 		}
 
@@ -62,7 +62,7 @@ func NewFloatStack(interpreter *Interpreter) *Stack {
 	}
 
 	s.Functions["="] = func() {
-		if !interpreter.stackOK("float", 2) {
+		if !interpreter.stackOK("float", 2) || !interpreter.stackOK("boolean", 0) {
 			return
 		}
 

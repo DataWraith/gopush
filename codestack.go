@@ -77,6 +77,10 @@ func NewCodeStack(interpreter *Interpreter) *Stack {
 	}
 
 	s.Functions["quote"] = func() {
+		if !interpreter.stackOK("exec", 1) {
+			return
+		}
+
 		c := interpreter.Stacks["exec"].Pop().(Code)
 		interpreter.Stacks["code"].Push(c)
 	}
