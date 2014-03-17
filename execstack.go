@@ -50,5 +50,19 @@ func NewExecStack(interpreter *Interpreter) *Stack {
 		}
 	}
 
+	s.Functions["pop"] = func() {
+		interpreter.Stacks["exec"].Pop()
+	}
+
+	s.Functions["y"] = func() {
+		if !interpreter.stackOK("exec", 1) {
+			return
+		}
+
+		e := interpreter.Stacks["exec"].Pop().(Code)
+		interpreter.Stacks["exec"].Push(Code{Length: 2, List: []Code{Code{Length: 1, Literal: "EXEC.Y"}, e}})
+		interpreter.Stacks["exec"].Push(e)
+	}
+
 	return s
 }
