@@ -1,6 +1,9 @@
 package gopush
 
-import "math"
+import (
+	"fmt"
+	"math"
+)
 
 func NewFloatStack(interpreter *Interpreter) *Stack {
 	s := &Stack{
@@ -91,7 +94,14 @@ func NewFloatStack(interpreter *Interpreter) *Stack {
 	}
 
 	s.Functions["define"] = func() {
-		// TODO
+		if !interpreter.stackOK("name", 1) || !interpreter.stackOK("float", 1) {
+			return
+		}
+
+		n := interpreter.Stacks["name"].Pop().(string)
+		f := interpreter.Stacks["float"].Pop().(float64)
+
+		interpreter.Definitions[n] = Code{Length: 1, Literal: fmt.Sprint(f)}
 	}
 
 	s.Functions["dup"] = func() {

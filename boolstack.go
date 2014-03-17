@@ -1,5 +1,7 @@
 package gopush
 
+import "fmt"
+
 func NewBooleanStack(interpreter *Interpreter) *Stack {
 	s := &Stack{
 		Functions: make(map[string]Instruction),
@@ -26,8 +28,14 @@ func NewBooleanStack(interpreter *Interpreter) *Stack {
 	}
 
 	s.Functions["define"] = func() {
-		// TODO
-		return
+		if !interpreter.stackOK("name", 1) || !interpreter.stackOK("boolean", 1) {
+			return
+		}
+
+		n := interpreter.Stacks["name"].Pop().(string)
+		b := interpreter.Stacks["boolean"].Pop().(bool)
+
+		interpreter.Definitions[n] = Code{Length: 1, Literal: fmt.Sprint(b)}
 	}
 
 	s.Functions["dup"] = func() {

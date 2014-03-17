@@ -1,5 +1,7 @@
 package gopush
 
+import "fmt"
+
 func NewIntStack(interpreter *Interpreter) *Stack {
 	s := &Stack{
 		Functions: make(map[string]Instruction),
@@ -53,6 +55,17 @@ func NewIntStack(interpreter *Interpreter) *Stack {
 		i1 := interpreter.Stacks["integer"].Pop().(int64)
 		i2 := interpreter.Stacks["integer"].Pop().(int64)
 		interpreter.Stacks["boolean"].Push(i2 == i1)
+	}
+
+	s.Functions["define"] = func() {
+		if !interpreter.stackOK("name", 1) || !interpreter.stackOK("integer", 1) {
+			return
+		}
+
+		n := interpreter.Stacks["name"].Pop().(string)
+		i := interpreter.Stacks["integer"].Pop().(int64)
+
+		interpreter.Definitions[n] = Code{Length: 1, Literal: fmt.Sprint(i)}
 	}
 
 	s.Functions["dup"] = func() {
