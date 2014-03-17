@@ -51,6 +51,10 @@ type Options struct {
 	// INTEGER constant or from a call to INTEGER.RAND.
 	MinRandomInteger int64
 
+	// When TRUE the interpreter will print out the stacks after every
+	// executed instruction
+	Tracing bool
+
 	// A seed for the random number generator.
 	RandomSeed int64
 }
@@ -79,6 +83,7 @@ var DefaultOptions = Options{
 	MinRandomFloat:              -1.0,
 	MaxRandomInteger:            10,
 	MinRandomInteger:            -10,
+	Tracing:                     false,
 	RandomSeed:                  rand.Int63(),
 }
 
@@ -114,7 +119,8 @@ func (i *Interpreter) stackOK(name string, mindepth int64) bool {
 	return true
 }
 
-func (i *Interpreter) printStacks() {
+func (i *Interpreter) printInterpreterState() {
+	fmt.Println("Step", i.numEvalPush)
 	for k, v := range i.Stacks {
 		fmt.Printf("%s:\n", k)
 		for i := len(v.Stack) - 1; i >= 0; i-- {
@@ -122,12 +128,18 @@ func (i *Interpreter) printStacks() {
 		}
 	}
 	fmt.Println()
+	fmt.Println()
 }
 
 func (i *Interpreter) runCode(program Code) error {
 	i.Stacks["exec"].Push(program)
 
 	for i.Stacks["exec"].Len() > 0 && i.numEvalPush < i.Options.EvalPushLimit {
+
+		if i.Options.Tracing {
+			i.printInterpreterState()
+		}
+
 		item := i.Stacks["exec"].Pop().(Code)
 		i.numEvalPush++
 
@@ -209,6 +221,10 @@ func (i *Interpreter) Run(program string) error {
 
 	if i.Options.TopLevelPopCode {
 		i.Stacks["code"].Pop()
+	}
+
+	if i.Options.Tracing {
+		i.printInterpreterState()
 	}
 
 	return err
