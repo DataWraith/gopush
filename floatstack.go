@@ -3,6 +3,7 @@ package gopush
 import (
 	"fmt"
 	"math"
+	"strings"
 )
 
 func NewFloatStack(interpreter *Interpreter) *Stack {
@@ -101,7 +102,12 @@ func NewFloatStack(interpreter *Interpreter) *Stack {
 		n := interpreter.Stacks["name"].Pop().(string)
 		f := interpreter.Stacks["float"].Pop().(float64)
 
-		interpreter.Definitions[n] = Code{Length: 1, Literal: fmt.Sprint(f)}
+		s := fmt.Sprint(f)
+		if !strings.Contains(s, ".") {
+			s += ".0"
+		}
+
+		interpreter.Definitions[n] = Code{Length: 1, Literal: s}
 	}
 
 	s.Functions["dup"] = func() {
