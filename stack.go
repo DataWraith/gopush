@@ -72,7 +72,14 @@ func (s *Stack) Rot() {
 }
 
 func (s *Stack) Shove(item interface{}, idx int64) {
-	//TODO
+	index := int64(len(s.Stack)-1) - idx
+	if index < 0 {
+		index = 0
+	} else if index > int64(len(s.Stack)) {
+		index = int64(len(s.Stack))
+	}
+
+	s.Stack = append(s.Stack[:index], append([]interface{}{item}, s.Stack[index:]...)...)
 }
 
 func (s *Stack) Yank(idx int64) {
