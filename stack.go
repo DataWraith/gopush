@@ -76,7 +76,20 @@ func (s *Stack) Shove(item interface{}, idx int64) {
 }
 
 func (s *Stack) Yank(idx int64) {
-	// TODO
+	if len(s.Stack) == 0 {
+		return
+	}
+
+	index := int64(len(s.Stack)-1) - idx
+	if index < 0 {
+		index = 0
+	} else if index > int64(len(s.Stack)-1) {
+		index = int64(len(s.Stack) - 1)
+	}
+
+	item := s.Stack[index]
+	s.Stack = append(s.Stack[:index], s.Stack[index+1:]...)
+	s.Stack = append(s.Stack, item)
 }
 
 func (s *Stack) YankDup(idx int64) {
