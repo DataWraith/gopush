@@ -8,6 +8,7 @@ import (
 	"strings"
 )
 
+// Options holds the configuration options for a Push Interpreter
 type Options struct {
 	// When TRUE (which is the default), code passed to the top level of
 	// the interpreter will be pushed onto the CODE stack prior to
@@ -59,6 +60,7 @@ type Options struct {
 	RandomSeed int64
 }
 
+// Interpreter is a Push interpreter.
 type Interpreter struct {
 	Stacks      map[string]*Stack
 	Options     Options
@@ -67,6 +69,7 @@ type Interpreter struct {
 	numEvalPush int
 }
 
+// DefaultOptions hold the default options for the Push Interpreter
 var DefaultOptions = Options{
 	TopLevelPushCode:            true,
 	TopLevelPopCode:             false,
@@ -82,6 +85,7 @@ var DefaultOptions = Options{
 	RandomSeed:                  rand.Int63(),
 }
 
+// NewInterpreter returns a new Push Interpreter, configured with the provided Options.
 func NewInterpreter(options Options) *Interpreter {
 	interpreter := &Interpreter{
 		Stacks:      make(map[string]*Stack),
@@ -206,12 +210,14 @@ func (i *Interpreter) runCode(program Code) (err error) {
 	}
 
 	if i.numEvalPush >= i.Options.EvalPushLimit {
-		return errors.New("EvalPushLimit exceeded")
+		return errors.New("the EvalPushLimit was exceeded")
 	}
 
 	return nil
 }
 
+// Run runs the given program written in the Push programming language until
+// the EvalPushLimit is reached
 func (i *Interpreter) Run(program string) error {
 	c, err := ParseCode(program)
 	if err != nil {
