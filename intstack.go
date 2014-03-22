@@ -8,7 +8,19 @@ func NewIntStack(interpreter *Interpreter) *Stack {
 	}
 
 	s.Functions["%"] = func() {
-		// TODO
+		if !interpreter.stackOK("integer", 2) || interpreter.Stacks["integer"].Peek().(int64) == 0 {
+			return
+		}
+
+		i1 := interpreter.Stacks["integer"].Pop().(int64)
+		i2 := interpreter.Stacks["integer"].Pop().(int64)
+
+		mod := i2 % i1
+		if (i2 < 0 && i1 > 0) || (i2 > 0 && i1 < 0) {
+			mod = i1 + mod
+		}
+
+		interpreter.Stacks["integer"].Push(mod)
 	}
 
 	s.Functions["*"] = func() {
