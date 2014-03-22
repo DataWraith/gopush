@@ -118,7 +118,7 @@ func NewBooleanStack(interpreter *Interpreter) *Stack {
 	}
 
 	s.Functions["yank"] = func() {
-		if !interpreter.stackOK("integer", 1) {
+		if !interpreter.stackOK("integer", 1) || !interpreter.stackOK("boolean", 1) {
 			return
 		}
 
@@ -127,7 +127,7 @@ func NewBooleanStack(interpreter *Interpreter) *Stack {
 	}
 
 	s.Functions["yankdup"] = func() {
-		if !interpreter.stackOK("integer", 1) {
+		if !interpreter.stackOK("integer", 1) || !interpreter.stackOK("boolean", 1) {
 			return
 		}
 
