@@ -181,12 +181,12 @@ func (i *Interpreter) runCode(program Code) (err error) {
 
 			s, ok := i.Stacks[stack]
 			if !ok {
-				return errors.New(fmt.Sprintf("unkown or disabled stack: %v", stack))
+				return fmt.Errorf("unknown or disabled stack: %v", stack)
 			}
 
 			f, ok := s.Functions[operation]
 			if !ok {
-				return errors.New(fmt.Sprintf("unknown or disabled instruction: %v.%v", stack, operation))
+				return fmt.Errorf("unknown or disabled instruction %v.%v", stack, operation)
 			}
 
 			f()
