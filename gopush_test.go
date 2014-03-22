@@ -75,20 +75,20 @@ func TestSuite(t *testing.T) {
 		if _, err = os.Stat(filepath.Join(ts, "1-setup.push")); err == nil {
 			setup, err = ioutil.ReadFile(filepath.Join(ts, "1-setup.push"))
 			if err != nil {
-				t.Fatal("error while reading %q", filepath.Join(ts, "1-setup.push"))
+				t.Fatalf("error while reading %q", filepath.Join(ts, "1-setup.push"))
 			}
 		}
 
 		// Open 2-program.push
 		program, err = ioutil.ReadFile(filepath.Join(ts, "2-program.push"))
 		if err != nil {
-			t.Fatal("error while reading %q", filepath.Join(ts, "2-program.push"))
+			t.Fatalf("error while reading %q", filepath.Join(ts, "2-program.push"))
 		}
 
 		// Open 3-expected.push
 		expected, err = ioutil.ReadFile(filepath.Join(ts, "3-expected.push"))
 		if err != nil {
-			t.Fatal("error while reading %q", filepath.Join(ts, "3-expected.push"))
+			t.Fatalf("error while reading %q", filepath.Join(ts, "3-expected.push"))
 		}
 
 		interpreter := gopush.NewInterpreter(gopush.DefaultOptions)
