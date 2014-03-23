@@ -66,7 +66,9 @@ type Interpreter struct {
 	Options     Options
 	Rand        *rand.Rand
 	Definitions map[string]Code
-	numEvalPush int
+
+	numEvalPush   int
+	quoteNextName bool
 }
 
 // DefaultOptions hold the default options for the Push Interpreter
@@ -88,18 +90,19 @@ var DefaultOptions = Options{
 // NewInterpreter returns a new Push Interpreter, configured with the provided Options.
 func NewInterpreter(options Options) *Interpreter {
 	interpreter := &Interpreter{
-		Stacks:      make(map[string]*Stack),
-		Options:     options,
-		Rand:        rand.New(rand.NewSource(options.RandomSeed)),
-		Definitions: make(map[string]Code),
-		numEvalPush: 0,
+		Stacks:        make(map[string]*Stack),
+		Options:       options,
+		Rand:          rand.New(rand.NewSource(options.RandomSeed)),
+		Definitions:   make(map[string]Code),
+		numEvalPush:   0,
+		quoteNextName: false,
 	}
 
 	interpreter.Stacks["integer"] = NewIntStack(interpreter)
 	interpreter.Stacks["float"] = NewFloatStack(interpreter)
 	interpreter.Stacks["exec"] = NewExecStack(interpreter)
 	interpreter.Stacks["code"] = NewCodeStack(interpreter)
-	interpreter.Stacks["name"] = new(Stack)
+	interpreter.Stacks["name"] = NewNameStack(interpreter)
 	interpreter.Stacks["boolean"] = NewBooleanStack(interpreter)
 
 	return interpreter
@@ -198,15 +201,19 @@ func (i *Interpreter) runCode(program Code) (err error) {
 		}
 
 		// If the item is not an instruction, it must be a name,
-		// either bound or unbound. First we check for bound names.
-		if d, ok := i.Definitions[strings.ToLower(item.Literal)]; ok {
-			// Name is already bound, push its value onto the exec stack
-			i.Stacks["exec"].Push(d)
-			continue
+		// either bound or unbound. If the quoteNextName flag is
+		// false, we can check if the name is already bound.
+		if !i.quoteNextName {
+			if d, ok := i.Definitions[strings.ToLower(item.Literal)]; ok {
+				// Name is already bound, push its value onto the exec stack
+				i.Stacks["exec"].Push(d)
+				continue
+			}
 		}
 
-		// The item is not bound yet, so push it onto the name stack
+		// The name is not bound yet, so push it onto the name stack
 		i.Stacks["name"].Push(strings.ToLower(item.Literal))
+		i.quoteNextName = false
 	}
 
 	if i.numEvalPush >= i.Options.EvalPushLimit {
