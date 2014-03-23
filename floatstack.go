@@ -190,9 +190,10 @@ func NewFloatStack(interpreter *Interpreter) *Stack {
 			return
 		}
 
-		f := interpreter.Stacks["float"].Pop().(float64)
 		i := interpreter.Stacks["integer"].Pop().(int64)
+		f := interpreter.Stacks["float"].Peek().(float64)
 		interpreter.Stacks["float"].Shove(f, i)
+		interpreter.Stacks["float"].Pop()
 	}
 
 	s.Functions["sin"] = func() {

@@ -50,8 +50,9 @@ func NewNameStack(interpreter *Interpreter) *Stack {
 		}
 
 		idx := interpreter.Stacks["integer"].Pop().(int64)
-		name := interpreter.Stacks["name"].Pop().(string)
+		name := interpreter.Stacks["name"].Peek().(string)
 		interpreter.Stacks["name"].Shove(name, idx)
+		interpreter.Stacks["name"].Pop()
 	}
 
 	s.Functions["stackdepth"] = func() {
