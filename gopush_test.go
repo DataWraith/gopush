@@ -2,6 +2,7 @@ package gopush_test
 
 import (
 	"io/ioutil"
+	"math"
 	"os"
 	"path/filepath"
 	"reflect"
@@ -63,6 +64,21 @@ func findTestSuites(directory string, t *testing.T) (testsuites []string) {
 	return
 }
 
+// Compares two float stacks for equality within epsilon
+func compareFloatStacks(s1, s2 *gopush.Stack, epsilon float64) bool {
+	if len(s1.Stack) != len(s2.Stack) {
+		return false
+	}
+
+	for i := 0; i < len(s1.Stack); i++ {
+		if math.Abs(s1.Stack[i].(float64)-s2.Stack[i].(float64)) > epsilon {
+			return false
+		}
+	}
+
+	return true
+}
+
 // This goes through the test suite under tests/ and runs every single example
 func TestSuite(t *testing.T) {
 	testsuites := findTestSuites("tests", t)
@@ -119,6 +135,16 @@ func TestSuite(t *testing.T) {
 		for name, stack := range interpreter.Stacks {
 			// Missing and empty stacks are equivalent
 			if len(stack.Stack) == 0 && len(expInterpreter.Stacks[name].Stack) == 0 {
+				continue
+			}
+
+			// We need to separately handle the FLOAT stack since
+			// the calculations using floating point are giving
+			// slightly different values on Drone.io
+			if name == "float" {
+				if !compareFloatStacks(stack, expInterpreter.Stacks[name], 1/1000000) {
+					t.Errorf("testsuite %q: stack float does not equal expected. Expected: \n%v\n, got: \n%v\n", ts, expInterpreter.Stacks[name].Stack, stack.Stack)
+				}
 				continue
 			}
 
