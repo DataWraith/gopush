@@ -142,7 +142,7 @@ func TestSuite(t *testing.T) {
 			// the calculations using floating point are giving
 			// slightly different values on Drone.io
 			if name == "float" {
-				if !compareFloatStacks(stack, expInterpreter.Stacks[name], 1/1000000) {
+				if !compareFloatStacks(stack, expInterpreter.Stacks[name], 1.0/1000000) {
 					t.Errorf("testsuite %q: stack float does not equal expected. Expected: \n%v\n, got: \n%v\n", ts, expInterpreter.Stacks[name].Stack, stack.Stack)
 				}
 				continue
