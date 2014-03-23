@@ -6,13 +6,26 @@ import (
 	"strings"
 )
 
+// NewFloatStack creates a new stack with functions for manipulating FLOATs
 func NewFloatStack(interpreter *Interpreter) *Stack {
 	s := &Stack{
 		Functions: make(map[string]Instruction),
 	}
 
 	s.Functions["%"] = func() {
-		// TODO
+		if !interpreter.stackOK("float", 2) || interpreter.Stacks["float"].Peek().(float64) == 0 {
+			return
+		}
+
+		f1 := interpreter.Stacks["float"].Pop().(float64)
+		f2 := interpreter.Stacks["float"].Pop().(float64)
+
+		mod := math.Mod(f2, f1)
+		if (f2 < 0 && f1 > 0) || (f2 > 0 && f1 < 0) {
+			mod = f1 + mod
+		}
+
+		interpreter.Stacks["float"].Push(mod)
 	}
 
 	s.Functions["*"] = func() {
@@ -213,7 +226,7 @@ func NewFloatStack(interpreter *Interpreter) *Stack {
 	}
 
 	s.Functions["yank"] = func() {
-		if !interpreter.stackOK("integer", 1) {
+		if !interpreter.stackOK("integer", 1) || !interpreter.stackOK("float", 1) {
 			return
 		}
 
@@ -222,7 +235,7 @@ func NewFloatStack(interpreter *Interpreter) *Stack {
 	}
 
 	s.Functions["yankdup"] = func() {
-		if !interpreter.stackOK("integer", 1) {
+		if !interpreter.stackOK("integer", 1) || !interpreter.stackOK("float", 1) {
 			return
 		}
 
