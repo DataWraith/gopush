@@ -68,6 +68,9 @@ func TestSuite(t *testing.T) {
 	testsuites := findTestSuites("tests", t)
 	for _, ts := range testsuites {
 
+		testOptions := gopush.DefaultOptions
+		testOptions.TopLevelPopCode = true
+
 		var setup, program, expected []byte
 		var err error
 
@@ -91,7 +94,7 @@ func TestSuite(t *testing.T) {
 			t.Fatalf("error while reading %q", filepath.Join(ts, "3-expected.push"))
 		}
 
-		interpreter := gopush.NewInterpreter(gopush.DefaultOptions)
+		interpreter := gopush.NewInterpreter(testOptions)
 
 		// Run the setup program
 		err = interpreter.Run(string(setup))
@@ -105,7 +108,7 @@ func TestSuite(t *testing.T) {
 			t.Fatalf("error while running test suite %q: %v", ts, err)
 		}
 
-		expInterpreter := gopush.NewInterpreter(gopush.DefaultOptions)
+		expInterpreter := gopush.NewInterpreter(testOptions)
 
 		// Run the expected program
 		err = expInterpreter.Run(string(expected))
@@ -114,13 +117,6 @@ func TestSuite(t *testing.T) {
 		}
 
 		for name, stack := range interpreter.Stacks {
-			// Ignore the CODE stack because `program` and
-			// `expected` arrive at the stacks in different code
-			// paths
-			if name == "code" {
-				continue
-			}
-
 			// Missing and empty stacks are equivalent
 			if len(stack.Stack) == 0 && len(expInterpreter.Stacks[name].Stack) == 0 {
 				continue
