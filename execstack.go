@@ -1,6 +1,6 @@
 package gopush
 
-func NewExecStack(interpreter *Interpreter) *Stack {
+func newExecStack(interpreter *Interpreter) *Stack {
 	s := &Stack{
 		Functions: make(map[string]Instruction),
 	}

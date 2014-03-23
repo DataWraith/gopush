@@ -1,7 +1,7 @@
 package gopush
 
 // NewNameStack returns a new NAME stack
-func NewNameStack(interpreter *Interpreter) *Stack {
+func newNameStack(interpreter *Interpreter) *Stack {
 	s := &Stack{
 		Functions: make(map[string]Instruction),
 	}

@@ -2,7 +2,7 @@ package gopush
 
 import "fmt"
 
-func NewIntStack(interpreter *Interpreter) *Stack {
+func newIntStack(interpreter *Interpreter) *Stack {
 	s := &Stack{
 		Functions: make(map[string]Instruction),
 	}

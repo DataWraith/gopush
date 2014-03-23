@@ -2,7 +2,7 @@ package gopush
 
 import "fmt"
 
-func NewBooleanStack(interpreter *Interpreter) *Stack {
+func newBooleanStack(interpreter *Interpreter) *Stack {
 	s := &Stack{
 		Functions: make(map[string]Instruction),
 	}

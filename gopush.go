@@ -98,12 +98,12 @@ func NewInterpreter(options Options) *Interpreter {
 		quoteNextName: false,
 	}
 
-	interpreter.Stacks["integer"] = NewIntStack(interpreter)
-	interpreter.Stacks["float"] = NewFloatStack(interpreter)
-	interpreter.Stacks["exec"] = NewExecStack(interpreter)
-	interpreter.Stacks["code"] = NewCodeStack(interpreter)
-	interpreter.Stacks["name"] = NewNameStack(interpreter)
-	interpreter.Stacks["boolean"] = NewBooleanStack(interpreter)
+	interpreter.Stacks["integer"] = newIntStack(interpreter)
+	interpreter.Stacks["float"] = newFloatStack(interpreter)
+	interpreter.Stacks["exec"] = newExecStack(interpreter)
+	interpreter.Stacks["code"] = newCodeStack(interpreter)
+	interpreter.Stacks["name"] = newNameStack(interpreter)
+	interpreter.Stacks["boolean"] = newBooleanStack(interpreter)
 
 	return interpreter
 }
