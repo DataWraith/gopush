@@ -10,9 +10,8 @@ import (
 
 // Options holds the configuration options for a Push Interpreter
 type Options struct {
-	// When TRUE (which is the default), code passed to the top level of
-	// the interpreter will be pushed onto the CODE stack prior to
-	// execution.
+	// When TRUE (which is the default), code passed to the top level of the
+	// interpreter will be pushed onto the CODE stack prior to execution.
 	TopLevelPushCode bool
 
 	// When TRUE, the CODE stack will be popped at the end of top level
@@ -135,10 +134,9 @@ func (i *Interpreter) printInterpreterState() {
 
 func (i *Interpreter) runCode(program Code) (err error) {
 
-	// Recover from a panic that could occur while executing an
-	// instruction. Because it is more convenient for functions to not
-	// return an error, the functions that want to return an error panic
-	// instead.
+	// Recover from a panic that could occur while executing an instruction.
+	// Because it is more convenient for functions to not return an error,
+	// the functions that want to return an error panic instead.
 	defer func() {
 		if perr := recover(); perr != nil {
 			err = perr.(error)
@@ -200,9 +198,9 @@ func (i *Interpreter) runCode(program Code) (err error) {
 			continue
 		}
 
-		// If the item is not an instruction, it must be a name,
-		// either bound or unbound. If the quoteNextName flag is
-		// false, we can check if the name is already bound.
+		// If the item is not an instruction, it must be a name, either
+		// bound or unbound. If the quoteNextName flag is false, we can
+		// check if the name is already bound.
 		if !i.quoteNextName {
 			if d, ok := i.Definitions[strings.ToLower(item.Literal)]; ok {
 				// Name is already bound, push its value onto the exec stack
@@ -223,8 +221,8 @@ func (i *Interpreter) runCode(program Code) (err error) {
 	return nil
 }
 
-// Run runs the given program written in the Push programming language until
-// the EvalPushLimit is reached
+// Run runs the given program written in the Push programming language until the
+// EvalPushLimit is reached
 func (i *Interpreter) Run(program string) error {
 	c, err := ParseCode(program)
 	if err != nil {
