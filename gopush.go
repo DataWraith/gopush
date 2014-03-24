@@ -178,13 +178,17 @@ func (i *Interpreter) Run(program string) error {
 	}
 
 	if i.Options.TopLevelPushCode {
-		i.Stacks["code"].Push(c)
+		if s, ok := i.Stacks["code"]; ok {
+			s.Push(c)
+		}
 	}
 
 	err = i.runCode(c)
 
 	if i.Options.TopLevelPopCode {
-		i.Stacks["code"].Pop()
+		if s, ok := i.Stacks["code"]; ok {
+			s.Pop()
+		}
 	}
 
 	if i.Options.Tracing {
