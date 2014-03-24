@@ -1,10 +1,6 @@
 package gopush
 
-import (
-	"errors"
-	"unicode"
-)
-
+// Code is the internal list representation of a (partial) Push program.
 type Code struct {
 	Length  int
 	Literal string
@@ -23,41 +19,8 @@ func (c Code) String() string {
 	return s + ")"
 }
 
-func ignoreWhiteSpace(program string) string {
-	for i, r := range program {
-		if !unicode.IsSpace(r) {
-			return program[i:]
-		}
-	}
-	return ""
-}
-
-func getToken(program string) (token, remainder string) {
-	for i, r := range program {
-		if unicode.IsSpace(r) {
-			return program[:i], program[i:]
-		}
-	}
-	return program, ""
-}
-
-func getToParen(program string) (subprogram, remainder string, err error) {
-	parenBalance := 1
-	for i, r := range program {
-		switch r {
-		case '(':
-			parenBalance++
-		case ')':
-			parenBalance--
-		}
-
-		if parenBalance == 0 {
-			return program[:i], program[i+1:], nil
-		}
-	}
-	return "", "", errors.New("unbalanced parentheses")
-}
-
+// ParseCode takes the provided Push program and parses it into the internal
+// list representation (type Code).
 func ParseCode(program string) (c Code, err error) {
 	t := ""
 	p := program
