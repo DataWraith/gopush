@@ -83,6 +83,12 @@ func DefaultOptions() Options {
 		RandomSeed:                  rand.Int63(),
 	}
 
+	o.AllowedTypes = make(map[string]struct{})
+	o.AllowedTypes["boolean"] = struct{}{}
+	o.AllowedTypes["code"] = struct{}{}
+	o.AllowedTypes["float"] = struct{}{}
+	o.AllowedTypes["integer"] = struct{}{}
+
 	return o
 }
 

@@ -32,12 +32,25 @@ func NewInterpreter(options Options) *Interpreter {
 		quoteNextName: false,
 	}
 
-	interpreter.Stacks["integer"] = newIntStack(interpreter)
-	interpreter.Stacks["float"] = newFloatStack(interpreter)
+	// Setup stacks
 	interpreter.Stacks["exec"] = newExecStack(interpreter)
-	interpreter.Stacks["code"] = newCodeStack(interpreter)
 	interpreter.Stacks["name"] = newNameStack(interpreter)
-	interpreter.Stacks["boolean"] = newBooleanStack(interpreter)
+
+	if _, ok := options.AllowedTypes["boolean"]; ok {
+		interpreter.Stacks["boolean"] = newBooleanStack(interpreter)
+	}
+
+	if _, ok := options.AllowedTypes["code"]; ok {
+		interpreter.Stacks["code"] = newCodeStack(interpreter)
+	}
+
+	if _, ok := options.AllowedTypes["float"]; ok {
+		interpreter.Stacks["float"] = newFloatStack(interpreter)
+	}
+
+	if _, ok := options.AllowedTypes["integer"]; ok {
+		interpreter.Stacks["integer"] = newIntStack(interpreter)
+	}
 
 	return interpreter
 }
