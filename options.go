@@ -58,26 +58,36 @@ type Options struct {
 
 	// A seed for the random number generator.
 	RandomSeed int64
+
+	// AllowedTypes lists the types (stacks) that are allowed
+	AllowedTypes map[string]struct{}
+
+	// AllowedInstructions lists the instructions that are allowed
+	AllowedInstructions map[string]struct{}
 }
 
-// DefaultOptions hold the default options for the Push Interpreter
-var DefaultOptions = Options{
-	TopLevelPushCode:            true,
-	TopLevelPopCode:             false,
-	EvalPushLimit:               1000,
-	NewERCNameProbabilty:        0.001,
-	MaxPointsInProgram:          100,
-	MaxPointsInRandomExpression: 25,
-	MaxRandomFloat:              1.0,
-	MinRandomFloat:              -1.0,
-	MaxRandomInteger:            10,
-	MinRandomInteger:            -10,
-	Tracing:                     false,
-	RandomSeed:                  rand.Int63(),
+// DefaultOptions provides an Options struct initialized to the default values
+func DefaultOptions() Options {
+	o := Options{
+		TopLevelPushCode:            true,
+		TopLevelPopCode:             false,
+		EvalPushLimit:               1000,
+		NewERCNameProbabilty:        0.001,
+		MaxPointsInProgram:          100,
+		MaxPointsInRandomExpression: 25,
+		MaxRandomFloat:              1.0,
+		MinRandomFloat:              -1.0,
+		MaxRandomInteger:            10,
+		MinRandomInteger:            -10,
+		Tracing:                     false,
+		RandomSeed:                  rand.Int63(),
+	}
+
+	return o
 }
 
 func parseOptions(s string) (Options, error) {
-	o := DefaultOptions
+	o := DefaultOptions()
 
 	var parameter, setting string
 

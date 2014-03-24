@@ -13,7 +13,7 @@ import (
 
 // Test that literals are correctly pushed onto their respective stacks
 func TestPushingLiterals(t *testing.T) {
-	interpreter := gopush.NewInterpreter(gopush.DefaultOptions)
+	interpreter := gopush.NewInterpreter(gopush.DefaultOptions())
 	err := interpreter.Run("3 3.1415926535 FALSE TRUE")
 
 	if err != nil {
@@ -84,7 +84,7 @@ func TestSuite(t *testing.T) {
 	testsuites := findTestSuites("tests", t)
 	for _, ts := range testsuites {
 
-		testOptions := gopush.DefaultOptions
+		testOptions := gopush.DefaultOptions()
 		testOptions.TopLevelPopCode = true
 
 		var setup, program, expected []byte
