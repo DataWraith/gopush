@@ -66,34 +66,52 @@ type Options struct {
 	AllowedInstructions map[string]struct{}
 }
 
-// DefaultOptions provides an Options struct initialized to the default values
-func DefaultOptions() Options {
-	o := Options{
-		TopLevelPushCode:            true,
-		TopLevelPopCode:             false,
-		EvalPushLimit:               1000,
-		NewERCNameProbabilty:        0.001,
-		MaxPointsInProgram:          100,
-		MaxPointsInRandomExpression: 25,
-		MaxRandomFloat:              1.0,
-		MinRandomFloat:              -1.0,
-		MaxRandomInteger:            10,
-		MinRandomInteger:            -10,
-		Tracing:                     false,
-		RandomSeed:                  rand.Int63(),
-	}
+// DefaultConfigFile holds the textual representation of the default
+// configuration
+var DefaultConfigFile = `
+## PARAMETER SETTINGS
+TOP-LEVEL-PUSH-CODE TRUE
+TOP-LEVEL-POP-CODE FALSE
 
-	o.AllowedTypes = make(map[string]struct{})
-	o.AllowedTypes["boolean"] = struct{}{}
-	o.AllowedTypes["code"] = struct{}{}
-	o.AllowedTypes["float"] = struct{}{}
-	o.AllowedTypes["integer"] = struct{}{}
+EVALPUSH-LIMIT 1000
 
-	return o
-}
+NEW-ERC-NAME-PROBABILITY 0.001
+
+MAX-POINTS-IN-PROGRAM 100
+MAX-POINTS-IN-RANDOM-EXPRESSIONS 25
+
+MAX-RANDOM-FLOAT 1.0
+MIN-RANDOM-FLOAT -1.0
+
+MAX-RANDOM-INTEGER 10
+MIN-RANDOM-INTEGER -10
+
+TRACING FALSE
+
+
+## TYPES
+type BOOLEAN
+type CODE
+type FLOAT
+type INTEGER
+
+
+## INSTRUCTIONS
+instruction INTEGER.FROMBOOLEAN
+instruction INTEGER.FROMFLOAT
+instruction INTEGER.>
+instruction INTEGER.<
+`
+
+// DefaultOptions contains the default configuration for a Push Interpreter.
+var DefaultOptions, _ = parseOptions(DefaultConfigFile)
 
 func parseOptions(s string) (Options, error) {
-	o := DefaultOptions()
+	o := Options{
+		AllowedTypes:        make(map[string]struct{}),
+		AllowedInstructions: make(map[string]struct{}),
+		RandomSeed:          rand.Int63(),
+	}
 
 	var parameter, setting string
 
@@ -107,6 +125,26 @@ func parseOptions(s string) (Options, error) {
 
 		switch strings.ToLower(parameter) {
 		case "type":
+			t := strings.ToLower(setting)
+			switch t {
+			case "boolean":
+				fallthrough
+			case "code":
+				fallthrough
+			case "float":
+				fallthrough
+			case "integer":
+				o.AllowedTypes[t] = struct{}{}
+
+			// NAME and EXEC stacks always exist, so they are a
+			// no-op with the type parameter
+			case "name":
+			case "exec":
+
+			default:
+				return Options{}, fmt.Errorf("unknown type: %q", setting)
+			}
+
 		case "instruction":
 		case "min-random-integer":
 			i, err := strconv.ParseInt(setting, 10, 64)

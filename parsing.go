@@ -17,6 +17,9 @@ func ignoreWhiteSpace(program string) string {
 func ignoreComments(s string) string {
 	for {
 		s = ignoreWhiteSpace(s)
+		if s == "" {
+			return ""
+		}
 		if s[0] == '#' {
 			for i, r := range s {
 				if r == '\n' {
