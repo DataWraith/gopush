@@ -23,6 +23,11 @@ type Interpreter struct {
 
 // NewInterpreter returns a new Push Interpreter, configured with the provided Options.
 func NewInterpreter(options Options) *Interpreter {
+
+	if options.RandomSeed == 0 {
+		options.RandomSeed = rand.Int63()
+	}
+
 	interpreter := &Interpreter{
 		Stacks:        make(map[string]*Stack),
 		Options:       options,
