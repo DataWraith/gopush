@@ -113,16 +113,25 @@ func (i *Interpreter) runCode(program Code) (err error) {
 
 		// Try to parse the item on top of the exec stack as a literal
 		if intlit, err := strconv.ParseInt(item.Literal, 10, 64); err == nil {
+			if !i.stackOK("integer", 0) {
+				return fmt.Errorf("found integer literal %v, but the integer stack is disabled", intlit)
+			}
 			i.Stacks["integer"].Push(intlit)
 			continue
 		}
 
 		if floatlit, err := strconv.ParseFloat(item.Literal, 64); err == nil {
+			if !i.stackOK("float", 0) {
+				return fmt.Errorf("found float literal %v, but the float stack is disabled", floatlit)
+			}
 			i.Stacks["float"].Push(floatlit)
 			continue
 		}
 
 		if boollit, err := strconv.ParseBool(item.Literal); err == nil {
+			if !i.stackOK("boolean", 0) {
+				return fmt.Errorf("found boolean literal %v, but the boolean stack is disabled", boollit)
+			}
 			i.Stacks["boolean"].Push(boollit)
 			continue
 		}
