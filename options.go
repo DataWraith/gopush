@@ -195,7 +195,7 @@ func parseOptions(s string) (Options, error) {
 			}
 
 			if i < 1 {
-				return Options{}, fmt.Errorf("MAX-POINTS-IN-RANDOM-EXPRESSION must be at least 1, got %v", i)
+				return Options{}, fmt.Errorf("MAX-POINTS-IN-RANDOM-EXPRESSIONS must be at least 1, got %v", i)
 			}
 
 			o.MaxPointsInRandomExpression = int(i)

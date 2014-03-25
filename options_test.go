@@ -42,6 +42,7 @@ var optionParseErrorTests = []struct {
 }{
 	{"type foo", "unknown type: \"foo\""},
 	{"type \ninteger", "expected setting to follow \"type\""},
+
 	{"min-random-integer foo", "could not parse \"foo\" as integer"},
 	{"max-random-integer foo", "could not parse \"foo\" as integer"},
 	{"max-points-in-random-expressions foo", "could not parse \"foo\" as integer"},
@@ -55,6 +56,11 @@ var optionParseErrorTests = []struct {
 	{"top-level-pop-code foo", "could not parse \"foo\" as boolean"},
 	{"tracing foo", "could not parse \"foo\" as boolean"},
 	{"foo bar", "unknown parameter \"foo\""},
+
+	{"max-points-in-random-expressions -7", "MAX-POINTS-IN-RANDOM-EXPRESSIONS must be at least 1, got -7"},
+	{"max-points-in-program -7", "MAX-POINTS-IN-PROGRAM must be at least 1, got -7"},
+	{"evalpush-limit -7", "EVALPUSH-LIMIT must be at least 1, got -7"},
+	{"new-erc-name-probability 1.1", "NEW-ERC-NAME-PROBABILITY must be between 0 and 1 inclusive, got 1.1"},
 }
 
 func TestParseErrors(t *testing.T) {
