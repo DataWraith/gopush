@@ -5,9 +5,9 @@ import (
 	"unicode"
 )
 
-func ignoreWhiteSpace(program string) string {
+func ignoreWhiteSpace(program string, includeNewline bool) string {
 	for i, r := range program {
-		if !unicode.IsSpace(r) {
+		if (r == '\n' && !includeNewline) || !(unicode.IsSpace(r)) {
 			return program[i:]
 		}
 	}
@@ -16,7 +16,7 @@ func ignoreWhiteSpace(program string) string {
 
 func ignoreComments(s string) string {
 	for {
-		s = ignoreWhiteSpace(s)
+		s = ignoreWhiteSpace(s, true)
 		if s == "" {
 			return ""
 		}
@@ -66,7 +66,7 @@ func getParameterSettingPair(s string) (parameter, setting, remainder string) {
 	}
 
 	parameter, s = getToken(s)
-	s = ignoreWhiteSpace(s)
+	s = ignoreWhiteSpace(s, false)
 	setting, s = getToken(s)
 
 	return parameter, setting, s

@@ -26,7 +26,7 @@ func ParseCode(program string) (c Code, err error) {
 	p := program
 
 	for len(p) > 0 {
-		p = ignoreWhiteSpace(p)
+		p = ignoreWhiteSpace(p, true)
 		t, p = getToken(p)
 
 		if t == "" {

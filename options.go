@@ -133,6 +133,10 @@ func parseOptions(s string) (Options, error) {
 			break
 		}
 
+		if setting == "" {
+			return Options{}, fmt.Errorf("expected setting to follow %q", parameter)
+		}
+
 		switch strings.ToLower(parameter) {
 		case "type":
 			t := strings.ToLower(setting)
