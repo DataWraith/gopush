@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"io"
 	"io/ioutil"
-	"math/rand"
 	"strconv"
 	"strings"
 )
@@ -108,9 +107,20 @@ var DefaultOptions, _ = parseOptions(DefaultConfigFile)
 
 func parseOptions(s string) (Options, error) {
 	o := Options{
-		AllowedTypes:        make(map[string]struct{}),
-		AllowedInstructions: make(map[string]struct{}),
-		RandomSeed:          rand.Int63(),
+		AllowedInstructions:         make(map[string]struct{}),
+		AllowedTypes:                make(map[string]struct{}),
+		EvalPushLimit:               1000,
+		MaxPointsInProgram:          100,
+		MaxPointsInRandomExpression: 25,
+		MaxRandomFloat:              1.0,
+		MaxRandomInteger:            10,
+		MinRandomFloat:              -1.0,
+		MinRandomInteger:            -10,
+		NewERCNameProbabilty:        0.001,
+		RandomSeed:                  0,
+		TopLevelPopCode:             false,
+		TopLevelPushCode:            true,
+		Tracing:                     false,
 	}
 
 	var parameter, setting string
