@@ -86,6 +86,7 @@ func TestSuite(t *testing.T) {
 
 		testOptions := gopush.DefaultOptions
 		testOptions.TopLevelPopCode = true
+		testOptions.RandomSeed = 1138
 
 		var setup, program, expected []byte
 		var err error
