@@ -3,6 +3,7 @@ package gopush
 import (
 	"fmt"
 	"math"
+	"math/rand"
 	"strings"
 )
 
@@ -178,7 +179,10 @@ func newFloatStack(interpreter *Interpreter) *Stack {
 	}
 
 	s.Functions["rand"] = func() {
-		// TODO
+		high := interpreter.Options.MaxRandomFloat
+		low := interpreter.Options.MinRandomFloat
+		rndfloat := rand.Float64()*(high-low) + low
+		interpreter.Stacks["float"].Push(rndfloat)
 	}
 
 	s.Functions["rot"] = func() {

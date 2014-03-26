@@ -1,6 +1,9 @@
 package gopush
 
-import "fmt"
+import (
+	"fmt"
+	"math/rand"
+)
 
 func newIntStack(interpreter *Interpreter) *Stack {
 	s := &Stack{
@@ -169,7 +172,10 @@ func newIntStack(interpreter *Interpreter) *Stack {
 	}
 
 	s.Functions["rand"] = func() {
-		// TODO
+		high := interpreter.Options.MaxRandomInteger
+		low := interpreter.Options.MinRandomInteger
+		rndint := rand.Int63n(high+1-low) + low
+		interpreter.Stacks["integer"].Push(rndint)
 	}
 
 	s.Functions["rot"] = func() {

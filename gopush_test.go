@@ -81,10 +81,13 @@ func compareFloatStacks(s1, s2 *gopush.Stack, epsilon float64) bool {
 
 // This goes through the test suite under tests/ and runs every single example
 func TestSuite(t *testing.T) {
+	var testOptions gopush.Options
+	var interpreter, expInterpreter *gopush.Interpreter
+
 	testsuites := findTestSuites("tests", t)
 	for _, ts := range testsuites {
 
-		testOptions := gopush.DefaultOptions
+		testOptions = gopush.DefaultOptions
 		testOptions.TopLevelPopCode = true
 		testOptions.RandomSeed = 1138
 
@@ -111,7 +114,7 @@ func TestSuite(t *testing.T) {
 			t.Fatalf("error while reading %q", filepath.Join(ts, "3-expected.push"))
 		}
 
-		interpreter := gopush.NewInterpreter(testOptions)
+		interpreter = gopush.NewInterpreter(testOptions)
 
 		// Run the setup program
 		err = interpreter.Run(string(setup))
@@ -125,7 +128,7 @@ func TestSuite(t *testing.T) {
 			t.Fatalf("error while running test suite %q: %v", ts, err)
 		}
 
-		expInterpreter := gopush.NewInterpreter(testOptions)
+		expInterpreter = gopush.NewInterpreter(testOptions)
 
 		// Run the expected program
 		err = expInterpreter.Run(string(expected))
