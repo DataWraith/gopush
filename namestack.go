@@ -1,5 +1,7 @@
 package gopush
 
+import "github.com/cryptix/goremutake"
+
 // newNameStack returns a new NAME stack
 func newNameStack(interpreter *Interpreter) *Stack {
 	s := &Stack{
@@ -33,7 +35,9 @@ func newNameStack(interpreter *Interpreter) *Stack {
 	}
 
 	s.Functions["rand"] = func() {
-		// TODO
+		randName := goremutake.Encode(interpreter.numNamesGenerated)
+		interpreter.Stacks["name"].Push(randName)
+		interpreter.numNamesGenerated++
 	}
 
 	s.Functions["randboundname"] = func() {

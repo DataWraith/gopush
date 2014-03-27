@@ -17,8 +17,9 @@ type Interpreter struct {
 	Rand        *rand.Rand
 	Definitions map[string]Code
 
-	numEvalPush   int
-	quoteNextName bool
+	numEvalPush       int
+	quoteNextName     bool
+	numNamesGenerated uint
 }
 
 // NewInterpreter returns a new Push Interpreter, configured with the provided Options.
@@ -29,12 +30,13 @@ func NewInterpreter(options Options) *Interpreter {
 	}
 
 	interpreter := &Interpreter{
-		Stacks:        make(map[string]*Stack),
-		Options:       options,
-		Rand:          rand.New(rand.NewSource(options.RandomSeed)),
-		Definitions:   make(map[string]Code),
-		numEvalPush:   0,
-		quoteNextName: false,
+		Stacks:            make(map[string]*Stack),
+		Options:           options,
+		Rand:              rand.New(rand.NewSource(options.RandomSeed)),
+		Definitions:       make(map[string]Code),
+		numEvalPush:       0,
+		quoteNextName:     false,
+		numNamesGenerated: 0,
 	}
 
 	// Setup stacks
