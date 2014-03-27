@@ -35,7 +35,7 @@ func newBooleanStack(interpreter *Interpreter) *Stack {
 		n := interpreter.Stacks["name"].Pop().(string)
 		b := interpreter.Stacks["boolean"].Pop().(bool)
 
-		interpreter.Definitions[n] = Code{Length: 1, Literal: fmt.Sprint(b)}
+		interpreter.define(n, Code{Length: 1, Literal: fmt.Sprint(b)})
 	}
 
 	s.Functions["dup"] = func() {

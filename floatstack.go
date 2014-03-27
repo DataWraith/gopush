@@ -121,7 +121,7 @@ func newFloatStack(interpreter *Interpreter) *Stack {
 			s += ".0"
 		}
 
-		interpreter.Definitions[n] = Code{Length: 1, Literal: s}
+		interpreter.define(n, Code{Length: 1, Literal: s})
 	}
 
 	s.Functions["dup"] = func() {

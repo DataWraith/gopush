@@ -104,7 +104,7 @@ func newIntStack(interpreter *Interpreter) *Stack {
 		n := interpreter.Stacks["name"].Pop().(string)
 		i := interpreter.Stacks["integer"].Pop().(int64)
 
-		interpreter.Definitions[n] = Code{Length: 1, Literal: fmt.Sprint(i)}
+		interpreter.define(n, Code{Length: 1, Literal: fmt.Sprint(i)})
 	}
 
 	s.Functions["dup"] = func() {

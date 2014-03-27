@@ -12,10 +12,12 @@ import (
 
 // Interpreter is a Push interpreter.
 type Interpreter struct {
-	Stacks      map[string]*Stack
-	Options     Options
-	Rand        *rand.Rand
-	Definitions map[string]Code
+	Stacks  map[string]*Stack
+	Options Options
+	Rand    *rand.Rand
+
+	Definitions       map[string]Code
+	listOfDefinitions []string
 
 	numEvalPush       int
 	quoteNextName     bool
@@ -34,6 +36,7 @@ func NewInterpreter(options Options) *Interpreter {
 		Options:           options,
 		Rand:              rand.New(rand.NewSource(options.RandomSeed)),
 		Definitions:       make(map[string]Code),
+		listOfDefinitions: make([]string, 0),
 		numEvalPush:       0,
 		quoteNextName:     false,
 		numNamesGenerated: 0,
@@ -73,6 +76,14 @@ func (i *Interpreter) stackOK(name string, mindepth int64) bool {
 	}
 
 	return true
+}
+
+func (i *Interpreter) define(name string, code Code) {
+	if _, ok := i.Definitions[name]; !ok {
+		i.listOfDefinitions = append(i.listOfDefinitions, name)
+	}
+
+	i.Definitions[name] = code
 }
 
 func (i *Interpreter) printInterpreterState() {

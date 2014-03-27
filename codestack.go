@@ -13,7 +13,7 @@ func newCodeStack(interpreter *Interpreter) *Stack {
 		n := interpreter.Stacks["name"].Pop().(string)
 		c := interpreter.Stacks["code"].Pop().(Code)
 
-		interpreter.Definitions[n] = c
+		interpreter.define(n, c)
 	}
 
 	s.Functions["do"] = func() {
