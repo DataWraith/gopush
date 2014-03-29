@@ -96,10 +96,153 @@ type INTEGER
 
 
 ## INSTRUCTIONS
+instruction BOOLEAN.=
+instruction BOOLEAN.AND
+instruction BOOLEAN.DEFINE
+instruction BOOLEAN.DUP
+instruction BOOLEAN.FLUSH
+instruction BOOLEAN.FROMFLOAT
+instruction BOOLEAN.FROMINTEGER
+instruction BOOLEAN.NOT
+instruction BOOLEAN.OR
+instruction BOOLEAN.POP
+instruction BOOLEAN.RAND
+instruction BOOLEAN.ROT
+instruction BOOLEAN.SHOVE
+instruction BOOLEAN.STACKDEPTH
+instruction BOOLEAN.SWAP
+instruction BOOLEAN.YANK
+instruction BOOLEAN.YANKDUP
+
+instruction CODE.=
+instruction CODE.APPEND
+instruction CODE.ATOM
+instruction CODE.CAR
+instruction CODE.CDR
+instruction CODE.CONS
+instruction CODE.CONTAINER
+instruction CODE.CONTAINS
+instruction CODE.DEFINE
+instruction CODE.DEFINITION
+instruction CODE.DISCREPANCY
+instruction CODE.DO
+instruction CODE.DO*
+instruction CODE.DO*COUNT
+instruction CODE.DO*RANGE
+instruction CODE.DO*TIMES
+instruction CODE.DUP
+instruction CODE.EXTRACT
+instruction CODE.FLUSH
+instruction CODE.FROMBOOLEAN
+instruction CODE.FROMFLOAT
+instruction CODE.FROMINTEGER
+instruction CODE.FROMNAME
+instruction CODE.IF
+instruction CODE.INSERT
+instruction CODE.INSTRUCTIONS
+instruction CODE.LENGTH
+instruction CODE.LIST
+instruction CODE.MEMBER
+instruction CODE.NOOP
+instruction CODE.NTH
+instruction CODE.NTHCDR
+instruction CODE.NULL
+instruction CODE.POP
+instruction CODE.POSITION
+instruction CODE.QUOTE
+instruction CODE.RAND
+instruction CODE.ROT
+instruction CODE.SHOVE
+instruction CODE.SIZE
+instruction CODE.STACKDEPTH
+instruction CODE.SUBST
+instruction CODE.SWAP
+instruction CODE.YANK
+instruction CODE.YANKDUP
+
+instruction EXEC.=
+instruction EXEC.DEFINE
+instruction EXEC.DO*COUNT
+instruction EXEC.DO*RANGE
+instruction EXEC.DO*TIMES
+instruction EXEC.DUP
+instruction EXEC.FLUSH
+instruction EXEC.IF
+instruction EXEC.K
+instruction EXEC.POP
+instruction EXEC.ROT
+instruction EXEC.S
+instruction EXEC.SHOVE
+instruction EXEC.STACKDEPTH
+instruction EXEC.SWAP
+instruction EXEC.Y
+instruction EXEC.YANK
+instruction EXEC.YANKDUP
+
+instruction FLOAT.%
+instruction FLOAT.*
+instruction FLOAT.+
+instruction FLOAT.-
+instruction FLOAT./
+instruction FLOAT.<
+instruction FLOAT.=
+instruction FLOAT.>
+instruction FLOAT.COS
+instruction FLOAT.DEFINE
+instruction FLOAT.DUP
+instruction FLOAT.FLUSH
+instruction FLOAT.FROMBOOLEAN
+instruction FLOAT.FROMINTEGER
+instruction FLOAT.MAX
+instruction FLOAT.MIN
+instruction FLOAT.POP
+instruction FLOAT.RAND
+instruction FLOAT.ROT
+instruction FLOAT.SHOVE
+instruction FLOAT.SIN
+instruction FLOAT.STACKDEPTH
+instruction FLOAT.SWAP
+instruction FLOAT.TAN
+instruction FLOAT.YANK
+instruction FLOAT.YANKDUP
+
+instruction INTEGER.%
+instruction INTEGER.*
+instruction INTEGER.+
+instruction INTEGER.-
+instruction INTEGER./
+instruction INTEGER.<
+instruction INTEGER.=
+instruction INTEGER.>
+instruction INTEGER.DEFINE
+instruction INTEGER.DUP
+instruction INTEGER.FLUSH
 instruction INTEGER.FROMBOOLEAN
 instruction INTEGER.FROMFLOAT
-instruction INTEGER.>
-instruction INTEGER.<
+instruction INTEGER.MAX
+instruction INTEGER.MIN
+instruction INTEGER.POP
+instruction INTEGER.RAND
+instruction INTEGER.ROT
+instruction INTEGER.SHOVE
+instruction INTEGER.STACKDEPTH
+instruction INTEGER.SWAP
+instruction INTEGER.YANK
+instruction INTEGER.YANKDUP
+
+instruction NAME.=
+instruction NAME.DUP
+instruction NAME.FLUSH
+instruction NAME.POP
+instruction NAME.QUOTE
+instruction NAME.RAND
+instruction NAME.RANDBOUNDNAME
+instruction NAME.ROT
+instruction NAME.SHOVE
+instruction NAME.STACKDEPTH
+instruction NAME.SWAP
+instruction NAME.YANK
+instruction NAME.YANKDUP
 `
 
 // DefaultOptions contains the default configuration for a Push Interpreter.
@@ -160,6 +303,9 @@ func parseOptions(s string) (Options, error) {
 			}
 
 		case "instruction":
+			instr := strings.ToLower(setting)
+			o.AllowedInstructions[instr] = struct{}{}
+
 		case "min-random-integer":
 			i, err := strconv.ParseInt(setting, 10, 64)
 			if err != nil {
