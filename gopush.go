@@ -48,18 +48,46 @@ func NewInterpreter(options Options) *Interpreter {
 
 	if _, ok := options.AllowedTypes["boolean"]; ok {
 		interpreter.Stacks["boolean"] = newBooleanStack(interpreter)
+
+		// Prune disallowed instructions
+		for fn := range interpreter.Stacks["boolean"].Functions {
+			if _, ok := options.AllowedInstructions["boolean."+fn]; !ok {
+				delete(interpreter.Stacks["boolean"].Functions, fn)
+			}
+		}
 	}
 
 	if _, ok := options.AllowedTypes["code"]; ok {
 		interpreter.Stacks["code"] = newCodeStack(interpreter)
+
+		// Prune disallowed instructions
+		for fn := range interpreter.Stacks["code"].Functions {
+			if _, ok := options.AllowedInstructions["code."+fn]; !ok {
+				delete(interpreter.Stacks["code"].Functions, fn)
+			}
+		}
 	}
 
 	if _, ok := options.AllowedTypes["float"]; ok {
 		interpreter.Stacks["float"] = newFloatStack(interpreter)
+
+		// Prune disallowed instructions
+		for fn := range interpreter.Stacks["float"].Functions {
+			if _, ok := options.AllowedInstructions["float."+fn]; !ok {
+				delete(interpreter.Stacks["float"].Functions, fn)
+			}
+		}
 	}
 
 	if _, ok := options.AllowedTypes["integer"]; ok {
 		interpreter.Stacks["integer"] = newIntStack(interpreter)
+
+		// Prune disallowed instructions
+		for fn := range interpreter.Stacks["integer"].Functions {
+			if _, ok := options.AllowedInstructions["integer."+fn]; !ok {
+				delete(interpreter.Stacks["integer"].Functions, fn)
+			}
+		}
 	}
 
 	return interpreter
