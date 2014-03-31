@@ -20,6 +20,16 @@ func newExecStack(interpreter *Interpreter) *Stack {
 		interpreter.Stacks["boolean"].Push(same)
 	}
 
+	s.Functions["define"] = func() {
+		if !interpreter.stackOK("exec", 1) || !interpreter.stackOK("name", 1) {
+			return
+		}
+
+		n := interpreter.Stacks["name"].Pop().(string)
+		c := interpreter.Stacks["exec"].Pop().(Code)
+		interpreter.define(n, c)
+	}
+
 	s.Functions["do*range"] = func() {
 		if !interpreter.stackOK("exec", 1) || !interpreter.stackOK("integer", 2) {
 			return
