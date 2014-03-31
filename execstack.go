@@ -1,8 +1,23 @@
 package gopush
 
+import (
+	"reflect"
+)
+
 func newExecStack(interpreter *Interpreter) *Stack {
 	s := &Stack{
 		Functions: make(map[string]Instruction),
+	}
+
+	s.Functions["="] = func() {
+		if !interpreter.stackOK("exec", 2) || !interpreter.stackOK("boolean", 0) {
+			return
+		}
+
+		e1 := interpreter.Stacks["exec"].Pop().(Code)
+		e2 := interpreter.Stacks["exec"].Pop().(Code)
+		same := reflect.DeepEqual(e1, e2)
+		interpreter.Stacks["boolean"].Push(same)
 	}
 
 	s.Functions["do*range"] = func() {
