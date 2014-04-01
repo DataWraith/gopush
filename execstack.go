@@ -94,6 +94,42 @@ func newExecStack(interpreter *Interpreter) *Stack {
 		}
 	}
 
+	s.Functions["do*times"] = func() {
+		if !interpreter.stackOK("exec", 1) || !interpreter.stackOK("integer", 1) {
+			return
+		}
+
+		if _, ok := interpreter.Stacks["exec"].Functions["do*range"]; !ok {
+			return
+		}
+
+		count := interpreter.Stacks["integer"].Pop().(int64)
+		code := interpreter.Stacks["exec"].Pop().(Code)
+
+		if count <= 0 {
+			return
+		}
+
+		loopBody := Code{
+			Length: 1 + code.Length,
+			List: []Code{
+				Code{Length: 1, Literal: "INTEGER.POP"},
+				code,
+			},
+		}
+
+		toPush := Code{
+			Length: 3 + code.Length,
+			List: []Code{
+				Code{Length: 1, Literal: "0"},
+				Code{Length: 1, Literal: fmt.Sprint(count - 1)},
+				Code{Length: 1, Literal: "EXEC.DO*RANGE"},
+				loopBody,
+			}}
+
+		interpreter.Stacks["exec"].Push(toPush)
+	}
+
 	s.Functions["if"] = func() {
 		if !interpreter.stackOK("exec", 2) || !interpreter.stackOK("boolean", 1) {
 			return
