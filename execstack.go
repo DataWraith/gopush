@@ -154,6 +154,16 @@ func newExecStack(interpreter *Interpreter) *Stack {
 		}
 	}
 
+	s.Functions["k"] = func() {
+		if !interpreter.stackOK("exec", 2) {
+			return
+		}
+
+		i1 := interpreter.Stacks["exec"].Pop().(Code)
+		_ = interpreter.Stacks["exec"].Pop()
+		interpreter.Stacks["exec"].Push(i1)
+	}
+
 	s.Functions["pop"] = func() {
 		interpreter.Stacks["exec"].Pop()
 	}
