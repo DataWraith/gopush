@@ -1,6 +1,7 @@
 package gopush
 
 import (
+	"fmt"
 	"reflect"
 )
 
@@ -51,11 +52,17 @@ func newExecStack(interpreter *Interpreter) *Stack {
 				cur++
 			}
 
-			interpreter.Stacks["integer"].Push(cur)
-			interpreter.Stacks["integer"].Push(dst)
+			interpreter.Stacks["exec"].Push(Code{
+				Length: 3 + c.Length,
+				List: []Code{
+					Code{Length: 1, Literal: fmt.Sprint(cur)},
+					Code{Length: 1, Literal: fmt.Sprint(dst)},
+					Code{Length: 1, Literal: "EXEC.DO*RANGE"},
+					c,
+				},
+			})
+
 			interpreter.Stacks["exec"].Push(c)
-			interpreter.Stacks["exec"].Push(c)
-			interpreter.Stacks["exec"].Push(Code{Length: 1, Literal: "EXEC.DO*RANGE"})
 		}
 	}
 
