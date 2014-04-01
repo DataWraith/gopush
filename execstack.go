@@ -120,7 +120,7 @@ func newExecStack(interpreter *Interpreter) *Stack {
 		}
 
 		e := interpreter.Stacks["exec"].Pop().(Code)
-		interpreter.Stacks["exec"].Push(Code{Length: 2, List: []Code{Code{Length: 1, Literal: "EXEC.Y"}, e}})
+		interpreter.Stacks["exec"].Push(Code{Length: 1 + e.Length, List: []Code{Code{Length: 1, Literal: "EXEC.Y"}, e}})
 		interpreter.Stacks["exec"].Push(e)
 	}
 
