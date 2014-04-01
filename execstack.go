@@ -134,6 +134,10 @@ func newExecStack(interpreter *Interpreter) *Stack {
 		interpreter.Stacks["exec"].Dup()
 	}
 
+	s.Functions["flush"] = func() {
+		interpreter.Stacks["exec"].Flush()
+	}
+
 	s.Functions["if"] = func() {
 		if !interpreter.stackOK("exec", 2) || !interpreter.stackOK("boolean", 1) {
 			return
