@@ -31,6 +31,34 @@ func newExecStack(interpreter *Interpreter) *Stack {
 		interpreter.define(n, c)
 	}
 
+	s.Functions["do*count"] = func() {
+		if !interpreter.stackOK("exec", 1) || !interpreter.stackOK("integer", 1) {
+			return
+		}
+
+		if _, ok := interpreter.Stacks["exec"].Functions["do*range"]; !ok {
+			return
+		}
+
+		count := interpreter.Stacks["integer"].Pop().(int64)
+		code := interpreter.Stacks["exec"].Pop().(Code)
+
+		if count <= 0 {
+			return
+		}
+
+		toPush := Code{
+			Length: 3 + code.Length,
+			List: []Code{
+				Code{Length: 1, Literal: "0"},
+				Code{Length: 1, Literal: fmt.Sprint(count - 1)},
+				Code{Length: 1, Literal: "EXEC.DO*RANGE"},
+				code,
+			}}
+
+		interpreter.Stacks["exec"].Push(toPush)
+	}
+
 	s.Functions["do*range"] = func() {
 		if !interpreter.stackOK("exec", 1) || !interpreter.stackOK("integer", 2) {
 			return
