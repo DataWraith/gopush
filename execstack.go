@@ -168,6 +168,10 @@ func newExecStack(interpreter *Interpreter) *Stack {
 		interpreter.Stacks["exec"].Pop()
 	}
 
+	s.Functions["rot"] = func() {
+		interpreter.Stacks["exec"].Rot()
+	}
+
 	s.Functions["y"] = func() {
 		if !interpreter.stackOK("exec", 1) {
 			return
