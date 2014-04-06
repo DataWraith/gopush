@@ -232,5 +232,23 @@ func newExecStack(interpreter *Interpreter) *Stack {
 		interpreter.Stacks["exec"].Push(e)
 	}
 
+	s.Functions["yank"] = func() {
+		if !interpreter.stackOK("integer", 1) || !interpreter.stackOK("exec", 1) {
+			return
+		}
+
+		idx := interpreter.Stacks["integer"].Pop().(int64)
+		interpreter.Stacks["exec"].Yank(idx)
+	}
+
+	s.Functions["yankdup"] = func() {
+		if !interpreter.stackOK("integer", 1) || !interpreter.stackOK("exec", 1) {
+			return
+		}
+
+		idx := interpreter.Stacks["integer"].Pop().(int64)
+		interpreter.Stacks["exec"].YankDup(idx)
+	}
+
 	return s
 }
