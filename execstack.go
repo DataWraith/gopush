@@ -172,6 +172,28 @@ func newExecStack(interpreter *Interpreter) *Stack {
 		interpreter.Stacks["exec"].Rot()
 	}
 
+	s.Functions["s"] = func() {
+		if !interpreter.stackOK("exec", 3) {
+			return
+		}
+
+		a := interpreter.Stacks["exec"].Pop().(Code)
+		b := interpreter.Stacks["exec"].Pop().(Code)
+		c := interpreter.Stacks["exec"].Pop().(Code)
+
+		l := Code{
+			Length: b.Length + c.Length,
+			List: []Code{
+				b,
+				c,
+			},
+		}
+
+		interpreter.Stacks["exec"].Push(l)
+		interpreter.Stacks["exec"].Push(c)
+		interpreter.Stacks["exec"].Push(a)
+	}
+
 	s.Functions["y"] = func() {
 		if !interpreter.stackOK("exec", 1) {
 			return
