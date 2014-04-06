@@ -194,6 +194,18 @@ func newExecStack(interpreter *Interpreter) *Stack {
 		interpreter.Stacks["exec"].Push(a)
 	}
 
+	s.Functions["shove"] = func() {
+		if !interpreter.stackOK("integer", 1) || !interpreter.stackOK("exec", 1) {
+			return
+		}
+
+		i := interpreter.Stacks["integer"].Pop().(int64)
+		c := interpreter.Stacks["exec"].Peek().(Code)
+
+		interpreter.Stacks["exec"].Shove(c, i)
+		interpreter.Stacks["exec"].Pop()
+	}
+
 	s.Functions["y"] = func() {
 		if !interpreter.stackOK("exec", 1) {
 			return
