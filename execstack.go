@@ -214,6 +214,14 @@ func newExecStack(interpreter *Interpreter) *Stack {
 		interpreter.Stacks["integer"].Push(interpreter.Stacks["exec"].Len())
 	}
 
+	s.Functions["swap"] = func() {
+		if !interpreter.stackOK("exec", 2) {
+			return
+		}
+
+		interpreter.Stacks["exec"].Swap()
+	}
+
 	s.Functions["y"] = func() {
 		if !interpreter.stackOK("exec", 1) {
 			return
