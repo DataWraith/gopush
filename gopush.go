@@ -8,6 +8,8 @@ import (
 	"math/rand"
 	"strconv"
 	"strings"
+
+	"github.com/cryptix/goremutake"
 )
 
 // Interpreter is a Push interpreter.
@@ -47,6 +49,7 @@ func NewInterpreter(options Options) *Interpreter {
 	// Setup stacks
 	interpreter.RegisterStack("exec", newExecStack(interpreter))
 	interpreter.RegisterStack("name", newNameStack(interpreter))
+	interpreter.listOfInstructions = append(interpreter.listOfInstructions, "NAME-ERC")
 
 	if _, ok := options.AllowedTypes["boolean"]; ok {
 		interpreter.RegisterStack("boolean", newBooleanStack(interpreter))
@@ -58,10 +61,12 @@ func NewInterpreter(options Options) *Interpreter {
 
 	if _, ok := options.AllowedTypes["float"]; ok {
 		interpreter.RegisterStack("float", newFloatStack(interpreter))
+		interpreter.listOfInstructions = append(interpreter.listOfInstructions, "FLOAT-ERC")
 	}
 
 	if _, ok := options.AllowedTypes["integer"]; ok {
 		interpreter.RegisterStack("integer", newIntStack(interpreter))
+		interpreter.listOfInstructions = append(interpreter.listOfInstructions, "INTEGER-ERC")
 	}
 
 	return interpreter
@@ -89,6 +94,48 @@ func (i *Interpreter) RegisterStack(name string, s *Stack) {
 	for fn := range s.Functions {
 		i.listOfInstructions = append(i.listOfInstructions, strings.ToUpper(name+"."+fn))
 	}
+}
+
+func (i *Interpreter) randomInstruction() Code {
+	var instr string
+
+	n := rand.Intn(len(i.listOfInstructions) + len(i.listOfDefinitions))
+
+	if n < len(i.listOfInstructions) {
+		instr = i.listOfInstructions[n]
+	} else {
+		instr = i.listOfDefinitions[n-len(i.listOfInstructions)]
+	}
+
+	switch instr {
+	case "INTEGER-ERC":
+		// Generate ephemeral random constant integer
+		high := i.Options.MaxRandomInteger
+		low := i.Options.MinRandomInteger
+		instr = fmt.Sprint(rand.Int63n(high+1-low) + low)
+
+	case "FLOAT-ERC":
+		// Generate ephemeral random constant float
+		high := i.Options.MaxRandomFloat
+		low := i.Options.MinRandomFloat
+		instr = fmt.Sprint(rand.Float64()*(high-low) + low)
+		if !strings.Contains(instr, ".") {
+			instr += ".0"
+		}
+
+	case "NAME-ERC":
+		// Generate ephemeral random constant NAME
+		if rand.Float64() < i.Options.NewERCNameProbabilty || i.numNamesGenerated == 0 {
+			// Generate a new random NAME
+			instr = goremutake.Encode(i.numNamesGenerated)
+			i.numNamesGenerated++
+		} else {
+			// Use a random, already generated NAME
+			instr = goremutake.Encode(uint(rand.Intn(int(i.numNamesGenerated))))
+		}
+	}
+
+	return Code{Length: 1, Literal: instr}
 }
 
 func (i *Interpreter) stackOK(name string, mindepth int64) bool {
