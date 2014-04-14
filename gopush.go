@@ -16,8 +16,9 @@ type Interpreter struct {
 	Options Options
 	Rand    *rand.Rand
 
-	Definitions       map[string]Code
-	listOfDefinitions []string
+	Definitions        map[string]Code
+	listOfDefinitions  []string
+	listOfInstructions []string
 
 	numEvalPush       int
 	quoteNextName     bool
@@ -32,46 +33,62 @@ func NewInterpreter(options Options) *Interpreter {
 	}
 
 	interpreter := &Interpreter{
-		Stacks:            make(map[string]*Stack),
-		Options:           options,
-		Rand:              rand.New(rand.NewSource(options.RandomSeed)),
-		Definitions:       make(map[string]Code),
-		listOfDefinitions: make([]string, 0),
-		numEvalPush:       0,
-		quoteNextName:     false,
-		numNamesGenerated: 0,
+		Stacks:             make(map[string]*Stack),
+		Options:            options,
+		Rand:               rand.New(rand.NewSource(options.RandomSeed)),
+		Definitions:        make(map[string]Code),
+		listOfDefinitions:  make([]string, 0),
+		listOfInstructions: make([]string, 0),
+		numEvalPush:        0,
+		quoteNextName:      false,
+		numNamesGenerated:  0,
 	}
 
 	// Setup stacks
-	interpreter.Stacks["exec"] = newExecStack(interpreter)
-	interpreter.Stacks["name"] = newNameStack(interpreter)
+	interpreter.RegisterStack("exec", newExecStack(interpreter))
+	interpreter.RegisterStack("name", newNameStack(interpreter))
 
 	if _, ok := options.AllowedTypes["boolean"]; ok {
-		interpreter.Stacks["boolean"] = newBooleanStack(interpreter)
+		interpreter.RegisterStack("boolean", newBooleanStack(interpreter))
 	}
 
 	if _, ok := options.AllowedTypes["code"]; ok {
-		interpreter.Stacks["code"] = newCodeStack(interpreter)
+		interpreter.RegisterStack("code", newCodeStack(interpreter))
 	}
 
 	if _, ok := options.AllowedTypes["float"]; ok {
-		interpreter.Stacks["float"] = newFloatStack(interpreter)
+		interpreter.RegisterStack("float", newFloatStack(interpreter))
 	}
 
 	if _, ok := options.AllowedTypes["integer"]; ok {
-		interpreter.Stacks["integer"] = newIntStack(interpreter)
-	}
-
-	// Prune disallowed instructions
-	for sn, stack := range interpreter.Stacks {
-		for fn := range stack.Functions {
-			if _, ok := options.AllowedInstructions[sn+"."+fn]; !ok {
-				delete(stack.Functions, fn)
-			}
-		}
+		interpreter.RegisterStack("integer", newIntStack(interpreter))
 	}
 
 	return interpreter
+}
+
+// RegisterStack registers the given stack under the given name. This
+// automatically prunes instructions that are not in the set of allowed
+// instructions and also makes the instructions of the stack available for
+// CODE.RAND to generate. It will NOT overwrite already existing stacks.
+func (i *Interpreter) RegisterStack(name string, s *Stack) {
+	if _, ok := i.Stacks[name]; ok {
+		return
+	}
+
+	i.Stacks[name] = s
+
+	// Prune disallowed instructions
+	for fn := range s.Functions {
+		if _, ok := i.Options.AllowedInstructions[name+"."+fn]; !ok {
+			delete(s.Functions, fn)
+		}
+	}
+
+	// Add the Stack's functions to the list of functions
+	for fn := range s.Functions {
+		i.listOfInstructions = append(i.listOfInstructions, strings.ToUpper(name+"."+fn))
+	}
 }
 
 func (i *Interpreter) stackOK(name string, mindepth int64) bool {
