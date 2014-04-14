@@ -5,6 +5,38 @@ func newCodeStack(interpreter *Interpreter) *Stack {
 		Functions: make(map[string]Instruction),
 	}
 
+	s.Functions["="] = func() {
+		// TODO
+	}
+
+	s.Functions["append"] = func() {
+		// TODO
+	}
+
+	s.Functions["atom"] = func() {
+		// TODO
+	}
+
+	s.Functions["car"] = func() {
+		// TODO
+	}
+
+	s.Functions["cdr"] = func() {
+		// TODO
+	}
+
+	s.Functions["cons"] = func() {
+		// TODO
+	}
+
+	s.Functions["container"] = func() {
+		// TODO
+	}
+
+	s.Functions["contains"] = func() {
+		// TODO
+	}
+
 	s.Functions["define"] = func() {
 		if !interpreter.stackOK("name", 1) || !interpreter.stackOK("code", 1) {
 			return
@@ -14,6 +46,14 @@ func newCodeStack(interpreter *Interpreter) *Stack {
 		c := interpreter.Stacks["code"].Pop().(Code)
 
 		interpreter.define(n, c)
+	}
+
+	s.Functions["definition"] = func() {
+		// TODO
+	}
+
+	s.Functions["discrepancy"] = func() {
+		// TODO
 	}
 
 	s.Functions["do"] = func() {
@@ -29,6 +69,14 @@ func newCodeStack(interpreter *Interpreter) *Stack {
 		}
 
 		interpreter.Stacks["code"].Pop()
+	}
+
+	s.Functions["do*"] = func() {
+		// TODO
+	}
+
+	s.Functions["do*count"] = func() {
+		// TODO
 	}
 
 	s.Functions["do*range"] = func() {
@@ -58,11 +106,38 @@ func newCodeStack(interpreter *Interpreter) *Stack {
 			interpreter.Stacks["integer"].Push(cur)
 			interpreter.Stacks["integer"].Push(dst)
 		}
+	}
 
+	s.Functions["do*times"] = func() {
+		// TODO
 	}
 
 	s.Functions["dup"] = func() {
 		interpreter.Stacks["code"].Dup()
+	}
+
+	s.Functions["extract"] = func() {
+		// TODO
+	}
+
+	s.Functions["flush"] = func() {
+		// TODO
+	}
+
+	s.Functions["fromboolean"] = func() {
+		// TODO
+	}
+
+	s.Functions["fromfloat"] = func() {
+		// TODO
+	}
+
+	s.Functions["frominteger"] = func() {
+		// TODO
+	}
+
+	s.Functions["fromname"] = func() {
+		// TODO
 	}
 
 	s.Functions["if"] = func() {
@@ -81,6 +156,50 @@ func newCodeStack(interpreter *Interpreter) *Stack {
 		}
 	}
 
+	s.Functions["insert"] = func() {
+		// TODO
+	}
+
+	s.Functions["instructions"] = func() {
+		// TODO
+	}
+
+	s.Functions["length"] = func() {
+		// TODO
+	}
+
+	s.Functions["list"] = func() {
+		// TODO
+	}
+
+	s.Functions["member"] = func() {
+		// TODO
+	}
+
+	s.Functions["noop"] = func() {
+		// TODO
+	}
+
+	s.Functions["nth"] = func() {
+		// TODO
+	}
+
+	s.Functions["nthcdr"] = func() {
+		// TODO
+	}
+
+	s.Functions["null"] = func() {
+		// TODO
+	}
+
+	s.Functions["pop"] = func() {
+		// TODO
+	}
+
+	s.Functions["position"] = func() {
+		// TODO
+	}
+
 	s.Functions["quote"] = func() {
 		if !interpreter.stackOK("exec", 1) {
 			return
@@ -88,6 +207,42 @@ func newCodeStack(interpreter *Interpreter) *Stack {
 
 		c := interpreter.Stacks["exec"].Pop().(Code)
 		interpreter.Stacks["code"].Push(c)
+	}
+
+	s.Functions["rand"] = func() {
+		// TODO
+	}
+
+	s.Functions["rot"] = func() {
+		// TODO
+	}
+
+	s.Functions["shove"] = func() {
+		// TODO
+	}
+
+	s.Functions["size"] = func() {
+		// TODO
+	}
+
+	s.Functions["stackdepth"] = func() {
+		// TODO
+	}
+
+	s.Functions["subst"] = func() {
+		// TODO
+	}
+
+	s.Functions["swap"] = func() {
+		// TODO
+	}
+
+	s.Functions["yank"] = func() {
+		// TODO
+	}
+
+	s.Functions["yankdup"] = func() {
+		// TODO
 	}
 
 	return s
