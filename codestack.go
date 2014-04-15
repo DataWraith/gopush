@@ -1,12 +1,25 @@
 package gopush
 
+import "reflect"
+
 func newCodeStack(interpreter *Interpreter) *Stack {
 	s := &Stack{
 		Functions: make(map[string]Instruction),
 	}
 
 	s.Functions["="] = func() {
-		// TODO
+		if !interpreter.stackOK("code", 2) || !interpreter.stackOK("boolean", 0) {
+			return
+		}
+
+		c1 := interpreter.Stacks["code"].Pop().(Code)
+		c2 := interpreter.Stacks["code"].Pop().(Code)
+
+		if reflect.DeepEqual(c1, c2) {
+			interpreter.Stacks["boolean"].Push(true)
+		} else {
+			interpreter.Stacks["boolean"].Push(false)
+		}
 	}
 
 	s.Functions["append"] = func() {
