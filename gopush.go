@@ -99,7 +99,7 @@ func (i *Interpreter) RegisterStack(name string, s *Stack) {
 func (i *Interpreter) randomInstruction() Code {
 	var instr string
 
-	n := rand.Intn(len(i.listOfInstructions) + len(i.listOfDefinitions))
+	n := i.Rand.Intn(len(i.listOfInstructions) + len(i.listOfDefinitions))
 
 	if n < len(i.listOfInstructions) {
 		instr = i.listOfInstructions[n]
@@ -112,26 +112,26 @@ func (i *Interpreter) randomInstruction() Code {
 		// Generate ephemeral random constant integer
 		high := i.Options.MaxRandomInteger
 		low := i.Options.MinRandomInteger
-		instr = fmt.Sprint(rand.Int63n(high+1-low) + low)
+		instr = fmt.Sprint(i.Rand.Int63n(high+1-low) + low)
 
 	case "FLOAT-ERC":
 		// Generate ephemeral random constant float
 		high := i.Options.MaxRandomFloat
 		low := i.Options.MinRandomFloat
-		instr = fmt.Sprint(rand.Float64()*(high-low) + low)
+		instr = fmt.Sprint(i.Rand.Float64()*(high-low) + low)
 		if !strings.Contains(instr, ".") {
 			instr += ".0"
 		}
 
 	case "NAME-ERC":
 		// Generate ephemeral random constant NAME
-		if rand.Float64() < i.Options.NewERCNameProbabilty || i.numNamesGenerated == 0 {
+		if i.Rand.Float64() < i.Options.NewERCNameProbabilty || i.numNamesGenerated == 0 {
 			// Generate a new random NAME
 			instr = goremutake.Encode(i.numNamesGenerated)
 			i.numNamesGenerated++
 		} else {
 			// Use a random, already generated NAME
-			instr = goremutake.Encode(uint(rand.Intn(int(i.numNamesGenerated))))
+			instr = goremutake.Encode(uint(i.Rand.Intn(int(i.numNamesGenerated))))
 		}
 	}
 
