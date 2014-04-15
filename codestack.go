@@ -121,7 +121,7 @@ func newCodeStack(interpreter *Interpreter) *Stack {
 	}
 
 	s.Functions["flush"] = func() {
-		// TODO
+		interpreter.Stacks["code"].Flush()
 	}
 
 	s.Functions["fromboolean"] = func() {
@@ -210,7 +210,21 @@ func newCodeStack(interpreter *Interpreter) *Stack {
 	}
 
 	s.Functions["rand"] = func() {
-		// TODO
+		if !interpreter.stackOK("integer", 1) {
+			return
+		}
+
+		maxPoints := interpreter.Stacks["integer"].Pop().(int64)
+		if maxPoints < 0 {
+			maxPoints *= -1
+		}
+
+		if maxPoints > interpreter.Options.MaxPointsInRandomExpression {
+			maxPoints = interpreter.Options.MaxPointsInRandomExpression
+		}
+
+		c := interpreter.RandomCode(maxPoints)
+		interpreter.Stacks["code"].Push(c)
 	}
 
 	s.Functions["rot"] = func() {

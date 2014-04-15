@@ -33,7 +33,7 @@ type Options struct {
 
 	// The maximum number of points in an expression produced by the
 	// CODE.RAND instruction.
-	MaxPointsInRandomExpression int
+	MaxPointsInRandomExpression int64
 
 	// The maximum FLOAT that will be produced as an ephemeral random FLOAT
 	// constant or from a call to FLOAT.RAND.
@@ -344,7 +344,7 @@ func parseOptions(s string) (Options, error) {
 				return Options{}, fmt.Errorf("MAX-POINTS-IN-RANDOM-EXPRESSIONS must be at least 1, got %v", i)
 			}
 
-			o.MaxPointsInRandomExpression = int(i)
+			o.MaxPointsInRandomExpression = i
 
 		case "max-points-in-program":
 			i, err := strconv.ParseInt(setting, 10, 64)

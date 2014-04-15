@@ -6,6 +6,7 @@ import (
 	"errors"
 	"fmt"
 	"math/rand"
+	"sort"
 	"strconv"
 	"strings"
 
@@ -94,6 +95,9 @@ func (i *Interpreter) RegisterStack(name string, s *Stack) {
 	for fn := range s.Functions {
 		i.listOfInstructions = append(i.listOfInstructions, strings.ToUpper(name+"."+fn))
 	}
+
+	// Sort the instructions (otherwise runs aren't repeatable)
+	sort.Strings(i.listOfInstructions)
 }
 
 func (i *Interpreter) randomInstruction() Code {
