@@ -23,7 +23,26 @@ func newCodeStack(interpreter *Interpreter) *Stack {
 	}
 
 	s.Functions["append"] = func() {
-		// TODO
+		if !interpreter.stackOK("code", 2) {
+			return
+		}
+
+		c1 := interpreter.Stacks["code"].Pop().(Code)
+		c2 := interpreter.Stacks["code"].Pop().(Code)
+
+		if c1.Literal != "" {
+			c1 = Code{Length: c1.Length, List: []Code{c1}}
+		}
+
+		if c2.Literal != "" {
+			c2 = Code{Length: c2.Length, List: []Code{c2}}
+		}
+
+		combined := Code{Length: c1.Length + c2.Length, List: append(c2.List, c1.List...)}
+
+		if combined.Length <= interpreter.Options.MaxPointsInProgram {
+			interpreter.Stacks["code"].Push(combined)
+		}
 	}
 
 	s.Functions["atom"] = func() {
