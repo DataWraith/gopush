@@ -243,7 +243,7 @@ func newCodeStack(interpreter *Interpreter) *Stack {
 	}
 
 	s.Functions["noop"] = func() {
-		// TODO
+		// Does nothing
 	}
 
 	s.Functions["nth"] = func() {
