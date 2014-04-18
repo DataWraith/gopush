@@ -43,9 +43,8 @@ func ParseCode(program string) (c Code, err error) {
 			if err != nil {
 				return Code{}, err
 			}
-
 			c.List = append(c.List, sublist)
-			c.Length += sublist.Length
+			c.Length += 1 + sublist.Length
 		} else {
 			c.List = append(c.List, Code{Length: 1, Literal: t})
 			c.Length++

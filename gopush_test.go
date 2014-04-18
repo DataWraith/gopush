@@ -40,6 +40,34 @@ func TestPushingLiterals(t *testing.T) {
 	}
 }
 
+var codeLengthTests = []struct {
+	programCode    string
+	expectedLength int
+}{
+	{"A", 1},
+	{"A B", 2},
+	{"( )", 1},
+	{"( ( ) )", 2},
+	{"( ( ) ( ) )", 3},
+	{"( A )", 2},
+	{"A ( B C )", 4},
+	{"( A ( B ( C D ) E ) F )", 9},
+}
+
+// Tests that ParseCode returns the correct code lengths
+func TestCodeLengths(t *testing.T) {
+	for _, clt := range codeLengthTests {
+		c, err := gopush.ParseCode(clt.programCode)
+		if err != nil {
+			t.Errorf("unexpected error while parsing program %q: %v", clt.programCode, err)
+		}
+
+		if c.Length != clt.expectedLength {
+			t.Errorf("expected parsing %q to result in code of length %v, got %v", clt.programCode, clt.expectedLength, c.Length)
+		}
+	}
+}
+
 // Helper function to find test suites
 func findTestSuites(directory string, t *testing.T) (testsuites []string) {
 	filepath.Walk(directory, func(path string, info os.FileInfo, err error) error {
