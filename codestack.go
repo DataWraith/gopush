@@ -66,7 +66,7 @@ func newCodeStack(interpreter *Interpreter) *Stack {
 
 		c := interpreter.Stacks["code"].Pop().(Code)
 
-		if c.Literal != "" {
+		if len(c.List) == 0 {
 			return
 		}
 
