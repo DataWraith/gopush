@@ -60,7 +60,17 @@ func newCodeStack(interpreter *Interpreter) *Stack {
 	}
 
 	s.Functions["car"] = func() {
-		// TODO
+		if !interpreter.stackOK("code", 1) {
+			return
+		}
+
+		c := interpreter.Stacks["code"].Pop().(Code)
+
+		if c.Literal != "" {
+			return
+		}
+
+		interpreter.Stacks["code"].Push(c.List[0])
 	}
 
 	s.Functions["cdr"] = func() {
