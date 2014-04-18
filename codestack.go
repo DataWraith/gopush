@@ -74,7 +74,21 @@ func newCodeStack(interpreter *Interpreter) *Stack {
 	}
 
 	s.Functions["cdr"] = func() {
-		// TODO
+		if !interpreter.stackOK("code", 1) {
+			return
+		}
+
+		c := interpreter.Stacks["code"].Pop().(Code)
+
+		if len(c.List) == 0 {
+			interpreter.Stacks["code"].Push(Code{})
+		} else {
+			cdr := Code{
+				Length: c.Length - c.List[0].Length,
+				List:   c.List[1:],
+			}
+			interpreter.Stacks["code"].Push(cdr)
+		}
 	}
 
 	s.Functions["cons"] = func() {
