@@ -46,7 +46,17 @@ func newCodeStack(interpreter *Interpreter) *Stack {
 	}
 
 	s.Functions["atom"] = func() {
-		// TODO
+		if !interpreter.stackOK("code", 1) || !interpreter.stackOK("boolean", 0) {
+			return
+		}
+
+		c := interpreter.Stacks["code"].Pop().(Code)
+
+		if c.Literal != "" {
+			interpreter.Stacks["boolean"].Push(true)
+		} else {
+			interpreter.Stacks["boolean"].Push(false)
+		}
 	}
 
 	s.Functions["car"] = func() {
