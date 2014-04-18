@@ -116,7 +116,15 @@ func newCodeStack(interpreter *Interpreter) *Stack {
 	}
 
 	s.Functions["container"] = func() {
-		// TODO
+		if !interpreter.stackOK("code", 2) {
+			return
+		}
+
+		c1 := interpreter.Stacks["code"].Pop().(Code)
+		c2 := interpreter.Stacks["code"].Pop().(Code)
+
+		c := c1.Container(c2)
+		interpreter.Stacks["code"].Push(c)
 	}
 
 	s.Functions["contains"] = func() {

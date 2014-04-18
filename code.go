@@ -1,5 +1,10 @@
 package gopush
 
+import (
+	"math"
+	"reflect"
+)
+
 // Code is the internal list representation of a (partial) Push program.
 type Code struct {
 	Length  int
@@ -43,6 +48,7 @@ func ParseCode(program string) (c Code, err error) {
 			if err != nil {
 				return Code{}, err
 			}
+
 			c.List = append(c.List, sublist)
 			c.Length += 1 + sublist.Length
 		} else {
@@ -52,4 +58,32 @@ func ParseCode(program string) (c Code, err error) {
 	}
 
 	return c, nil
+}
+
+// Container returns the "container" of the given Code c2 in c. That is, it
+// returns the smallest sublist of c which contains c2, or the empty list if
+// none of the sublists in c contain c2.
+func (c Code) Container(c2 Code) (container Code) {
+	container.Length = math.MaxInt32
+
+	if c.Literal != "" {
+		return
+	}
+
+	for _, sl := range c.List {
+		if reflect.DeepEqual(sl, c2) && c.Length < container.Length {
+			container = c
+		} else {
+			candidate := sl.Container(c2)
+			if candidate.Length < container.Length {
+				container = candidate
+			}
+		}
+	}
+
+	if container.Length == math.MaxInt32 {
+		return Code{}
+	}
+
+	return container
 }
