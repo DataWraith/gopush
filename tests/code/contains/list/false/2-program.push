@@ -1,0 +1,1 @@
+CODE.QUOTE ( A B ( C D ( E F ) ) ) CODE.QUOTE ( E F G ) CODE.CONTAINS

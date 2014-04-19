@@ -87,3 +87,19 @@ func (c Code) Container(c2 Code) (container Code) {
 
 	return container
 }
+
+// Contains returns whether the Code c is equal to c2 or contains it in any
+// sublist
+func (c Code) Contains(c2 Code) bool {
+	if reflect.DeepEqual(c, c2) {
+		return true
+	}
+
+	for _, sl := range c.List {
+		if sl.Contains(c2) {
+			return true
+		}
+	}
+
+	return false
+}

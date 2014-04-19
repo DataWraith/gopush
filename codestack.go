@@ -128,7 +128,14 @@ func newCodeStack(interpreter *Interpreter) *Stack {
 	}
 
 	s.Functions["contains"] = func() {
-		// TODO
+		if !interpreter.stackOK("code", 2) || !interpreter.stackOK("boolean", 0) {
+			return
+		}
+
+		c1 := interpreter.Stacks["code"].Pop().(Code)
+		c2 := interpreter.Stacks["code"].Pop().(Code)
+
+		interpreter.Stacks["boolean"].Push(c2.Contains(c1))
 	}
 
 	s.Functions["define"] = func() {
