@@ -150,7 +150,15 @@ func newCodeStack(interpreter *Interpreter) *Stack {
 	}
 
 	s.Functions["definition"] = func() {
-		// TODO
+		if !interpreter.stackOK("name", 1) {
+			return
+		}
+
+		n := interpreter.Stacks["name"].Pop().(string)
+
+		if c, ok := interpreter.Definitions[n]; ok {
+			interpreter.Stacks["code"].Push(c)
+		}
 	}
 
 	s.Functions["discrepancy"] = func() {
