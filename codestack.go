@@ -210,7 +210,17 @@ func newCodeStack(interpreter *Interpreter) *Stack {
 	}
 
 	s.Functions["do*"] = func() {
-		// TODO
+		if !interpreter.stackOK("code", 1) {
+			return
+		}
+
+		c := interpreter.Stacks["code"].Pop().(Code)
+		interpreter.Stacks["code"].Pop()
+
+		err := interpreter.runCode(c)
+		if err != nil {
+			panic(err)
+		}
 	}
 
 	s.Functions["do*count"] = func() {
