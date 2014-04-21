@@ -1,6 +1,10 @@
 package gopush
 
-import "reflect"
+import (
+	"fmt"
+	"reflect"
+	"strings"
+)
 
 func newCodeStack(interpreter *Interpreter) *Stack {
 	s := &Stack{
@@ -273,19 +277,43 @@ func newCodeStack(interpreter *Interpreter) *Stack {
 	}
 
 	s.Functions["fromboolean"] = func() {
-		// TODO
+		if !interpreter.stackOK("boolean", 1) {
+			return
+		}
+
+		b := interpreter.Stacks["boolean"].Pop().(bool)
+		interpreter.Stacks["code"].Push(Code{Length: 1, Literal: fmt.Sprint(b)})
 	}
 
 	s.Functions["fromfloat"] = func() {
-		// TODO
+		if !interpreter.stackOK("float", 1) {
+			return
+		}
+
+		f := interpreter.Stacks["float"].Pop().(float64)
+		l := fmt.Sprint(f)
+		if !strings.Contains(l, ".") {
+			l += ".0"
+		}
+		interpreter.Stacks["code"].Push(Code{Length: 1, Literal: l})
 	}
 
 	s.Functions["frominteger"] = func() {
-		// TODO
+		if !interpreter.stackOK("integer", 1) {
+			return
+		}
+
+		i := interpreter.Stacks["integer"].Pop().(int64)
+		interpreter.Stacks["code"].Push(Code{Length: 1, Literal: fmt.Sprint(i)})
 	}
 
 	s.Functions["fromname"] = func() {
-		// TODO
+		if !interpreter.stackOK("name", 1) {
+			return
+		}
+
+		n := interpreter.Stacks["name"].Pop().(string)
+		interpreter.Stacks["code"].Push(Code{Length: 1, Literal: n})
 	}
 
 	s.Functions["if"] = func() {
