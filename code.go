@@ -103,3 +103,21 @@ func (c Code) Contains(c2 Code) bool {
 
 	return false
 }
+
+// UniqueItems returns a map with the count of all unique items in the Code list
+func (c Code) UniqueItems() map[string]int64 {
+	result := make(map[string]int64)
+
+	if c.Literal != "" {
+		result[c.Literal]++
+		return result
+	}
+
+	for _, sl := range c.List {
+		for k, v := range sl.UniqueItems() {
+			result[k] += v
+		}
+	}
+
+	return result
+}

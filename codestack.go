@@ -162,7 +162,36 @@ func newCodeStack(interpreter *Interpreter) *Stack {
 	}
 
 	s.Functions["discrepancy"] = func() {
-		// TODO
+		if !interpreter.stackOK("code", 2) || !interpreter.stackOK("integer", 0) {
+			return
+		}
+
+		c1 := interpreter.Stacks["code"].Pop().(Code)
+		c2 := interpreter.Stacks["code"].Pop().(Code)
+
+		u1 := c1.UniqueItems()
+		u2 := c2.UniqueItems()
+
+		keys := make(map[string]struct{}, 0)
+
+		for k := range u1 {
+			keys[k] = struct{}{}
+		}
+
+		for k := range u2 {
+			keys[k] = struct{}{}
+		}
+
+		discrepancy := int64(0)
+		for k := range keys {
+			if u1[k] > u2[k] {
+				discrepancy += u1[k] - u2[k]
+			} else {
+				discrepancy += u2[k] - u1[k]
+			}
+		}
+
+		interpreter.Stacks["integer"].Push(discrepancy)
 	}
 
 	s.Functions["do"] = func() {
