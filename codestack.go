@@ -419,7 +419,12 @@ func newCodeStack(interpreter *Interpreter) *Stack {
 	}
 
 	s.Functions["size"] = func() {
-		// TODO
+		if !interpreter.stackOK("code", 1) || !interpreter.stackOK("integer", 0) {
+			return
+		}
+
+		c := interpreter.Stacks["code"].Peek().(Code)
+		interpreter.Stacks["integer"].Push(c.Length)
 	}
 
 	s.Functions["stackdepth"] = func() {
