@@ -365,7 +365,12 @@ func newCodeStack(interpreter *Interpreter) *Stack {
 	}
 
 	s.Functions["null"] = func() {
-		// TODO
+		if !interpreter.stackOK("code", 1) || !interpreter.stackOK("boolean", 0) {
+			return
+		}
+
+		c := interpreter.Stacks["code"].Peek().(Code)
+		interpreter.Stacks["boolean"].Push(c.Literal == "" && len(c.List) == 0)
 	}
 
 	s.Functions["pop"] = func() {
