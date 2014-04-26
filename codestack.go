@@ -341,11 +341,32 @@ func newCodeStack(interpreter *Interpreter) *Stack {
 	}
 
 	s.Functions["length"] = func() {
-		// TODO
+		if !interpreter.stackOK("code", 1) || !interpreter.stackOK("integer", 0) {
+			return
+		}
+
+		c := interpreter.Stacks["code"].Peek().(Code)
+		if c.Literal != "" {
+			interpreter.Stacks["integer"].Push(int64(1))
+		} else {
+			interpreter.Stacks["integer"].Push(int64(len(c.List)))
+		}
 	}
 
 	s.Functions["list"] = func() {
-		// TODO
+		if !interpreter.stackOK("code", 2) {
+			return
+		}
+
+		c1 := interpreter.Stacks["code"].Pop().(Code)
+		c2 := interpreter.Stacks["code"].Pop().(Code)
+
+		c := Code{
+			Length: c1.Length + c2.Length,
+			List:   []Code{c1, c2},
+		}
+
+		interpreter.Stacks["code"].Push(c)
 	}
 
 	s.Functions["member"] = func() {
