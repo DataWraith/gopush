@@ -404,11 +404,18 @@ func newCodeStack(interpreter *Interpreter) *Stack {
 	}
 
 	s.Functions["rot"] = func() {
-		// TODO
+		interpreter.Stacks["code"].Rot()
 	}
 
 	s.Functions["shove"] = func() {
-		// TODO
+		if !interpreter.stackOK("code", 1) || !interpreter.stackOK("integer", 1) {
+			return
+		}
+
+		idx := interpreter.Stacks["integer"].Pop().(int64)
+		c := interpreter.Stacks["code"].Peek().(Code)
+		interpreter.Stacks["code"].Shove(c, idx)
+		interpreter.Stacks["code"].Pop()
 	}
 
 	s.Functions["size"] = func() {
@@ -416,7 +423,11 @@ func newCodeStack(interpreter *Interpreter) *Stack {
 	}
 
 	s.Functions["stackdepth"] = func() {
-		// TODO
+		if !interpreter.stackOK("integer", 0) {
+			return
+		}
+
+		interpreter.Stacks["integer"].Push(interpreter.Stacks["code"].Len())
 	}
 
 	s.Functions["subst"] = func() {
@@ -424,15 +435,25 @@ func newCodeStack(interpreter *Interpreter) *Stack {
 	}
 
 	s.Functions["swap"] = func() {
-		// TODO
+		interpreter.Stacks["code"].Swap()
 	}
 
 	s.Functions["yank"] = func() {
-		// TODO
+		if !interpreter.stackOK("integer", 1) || !interpreter.stackOK("code", 1) {
+			return
+		}
+
+		idx := interpreter.Stacks["integer"].Pop().(int64)
+		interpreter.Stacks["code"].Yank(idx)
 	}
 
 	s.Functions["yankdup"] = func() {
-		// TODO
+		if !interpreter.stackOK("integer", 1) || !interpreter.stackOK("code", 1) {
+			return
+		}
+
+		idx := interpreter.Stacks["integer"].Pop().(int64)
+		interpreter.Stacks["code"].YankDup(idx)
 	}
 
 	return s
