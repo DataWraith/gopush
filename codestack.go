@@ -406,7 +406,7 @@ func newCodeStack(interpreter *Interpreter) *Stack {
 	}
 
 	s.Functions["pop"] = func() {
-		// TODO
+		interpreter.Stacks["code"].Pop()
 	}
 
 	s.Functions["position"] = func() {
