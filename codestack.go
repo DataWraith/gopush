@@ -337,7 +337,18 @@ func newCodeStack(interpreter *Interpreter) *Stack {
 	}
 
 	s.Functions["instructions"] = func() {
-		// TODO
+		c := Code{List: make([]Code, 0, len(interpreter.listOfInstructions))}
+
+		for _, instr := range interpreter.listOfInstructions {
+			if instr == "NAME-ERC" || instr == "FLOAT-ERC" || instr == "INTEGER-ERC" {
+				continue
+			}
+
+			c.Length++
+			c.List = append(c.List, Code{Length: 1, Literal: instr})
+		}
+
+		interpreter.Stacks["code"].Push(c)
 	}
 
 	s.Functions["length"] = func() {
