@@ -176,7 +176,7 @@ func newCodeStack(interpreter *Interpreter) *Stack {
 		u1 := c1.UniqueItems()
 		u2 := c2.UniqueItems()
 
-		keys := make(map[string]struct{}, 0)
+		keys := make(map[string]struct{})
 
 		for k := range u1 {
 			keys[k] = struct{}{}
