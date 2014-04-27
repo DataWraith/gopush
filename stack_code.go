@@ -228,7 +228,29 @@ func newCodeStack(interpreter *Interpreter) *Stack {
 	}
 
 	s.Functions["do*count"] = func() {
-		// TODO
+		if !interpreter.stackOK("code", 1) || !interpreter.stackOK("integer", 1) {
+			return
+		}
+
+		i := interpreter.Stacks["integer"].Pop().(int64)
+		c := interpreter.Stacks["code"].Pop().(Code)
+
+		if i <= 0 {
+			return
+		}
+
+		toPush := Code{
+			Length: 4 + c.Length,
+			List: []Code{
+				Code{Length: 1, Literal: "0"},
+				Code{Length: 1, Literal: fmt.Sprint(i)},
+				Code{Length: 1, Literal: "CODE.QUOTE"},
+				c,
+				Code{Length: 1, Literal: "CODE.DO*RANGE"},
+			},
+		}
+
+		interpreter.Stacks["code"].Push(toPush)
 	}
 
 	s.Functions["do*range"] = func() {
@@ -261,7 +283,32 @@ func newCodeStack(interpreter *Interpreter) *Stack {
 	}
 
 	s.Functions["do*times"] = func() {
-		// TODO
+		if !interpreter.stackOK("code", 1) || !interpreter.stackOK("integer", 1) {
+			return
+		}
+
+		i := interpreter.Stacks["integer"].Pop().(int64)
+		c := interpreter.Stacks["code"].Pop().(Code)
+
+		if i <= 0 {
+			return
+		}
+
+		toPush := Code{
+			Length: 4 + c.Length,
+			List: []Code{
+				Code{Length: 1, Literal: "0"},
+				Code{Length: 1, Literal: fmt.Sprint(i)},
+				Code{Length: 1, Literal: "CODE.QUOTE"},
+				Code{Length: 1 + c.Length, List: []Code{
+					Code{Length: 1, Literal: "INTEGER.POP"},
+					c,
+				}},
+				Code{Length: 1, Literal: "CODE.DO*RANGE"},
+			},
+		}
+
+		interpreter.Stacks["code"].Push(toPush)
 	}
 
 	s.Functions["dup"] = func() {
