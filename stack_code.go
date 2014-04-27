@@ -448,7 +448,7 @@ func newCodeStack(interpreter *Interpreter) *Stack {
 			return
 		}
 
-		c := interpreter.Stacks["code"].Peek().(Code)
+		c := interpreter.Stacks["code"].Pop().(Code)
 		interpreter.Stacks["boolean"].Push(c.Literal == "" && len(c.List) == 0)
 	}
 
