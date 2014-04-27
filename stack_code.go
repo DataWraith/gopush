@@ -414,7 +414,33 @@ func newCodeStack(interpreter *Interpreter) *Stack {
 	}
 
 	s.Functions["nthcdr"] = func() {
-		// TODO
+		if !interpreter.stackOK("code", 1) || !interpreter.stackOK("integer", 1) {
+			return
+		}
+
+		i := interpreter.Stacks["integer"].Pop().(int64)
+		c := interpreter.Stacks["code"].Pop().(Code)
+
+		if c.Literal == "" && len(c.List) == 0 {
+			interpreter.Stacks["code"].Push(c)
+			return
+		}
+
+		if c.Literal != "" {
+			c = Code{Length: c.Length, List: []Code{c}}
+		}
+
+		idx := i % int64(len(c.List))
+		if idx < 0 {
+			idx = -idx
+		}
+
+		nthcdr := Code{List: c.List[idx:]}
+		for _, sl := range c.List {
+			nthcdr.Length += sl.Length
+		}
+
+		interpreter.Stacks["code"].Push(nthcdr)
 	}
 
 	s.Functions["null"] = func() {
