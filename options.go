@@ -65,6 +65,15 @@ type Options struct {
 	AllowedInstructions map[string]struct{}
 }
 
+// RegisterStack adds all instructions from the given Stack to the list of
+// allowed instructions
+func (o Options) RegisterStack(name string, s *Stack) {
+	o.AllowedTypes[name] = struct{}{}
+	for k := range s.Functions {
+		o.AllowedInstructions[name+"."+k] = struct{}{}
+	}
+}
+
 // defaultConfigFile holds the textual representation of the default
 // configuration
 var defaultConfigFile = `
