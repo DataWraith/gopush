@@ -65,9 +65,9 @@ type Options struct {
 	AllowedInstructions map[string]struct{}
 }
 
-// DefaultConfigFile holds the textual representation of the default
+// defaultConfigFile holds the textual representation of the default
 // configuration
-var DefaultConfigFile = `
+var defaultConfigFile = `
 ## PARAMETER SETTINGS
 TOP-LEVEL-PUSH-CODE TRUE
 TOP-LEVEL-POP-CODE FALSE
@@ -246,7 +246,7 @@ instruction NAME.YANKDUP
 `
 
 // DefaultOptions contains the default configuration for a Push Interpreter.
-var DefaultOptions, _ = parseOptions(DefaultConfigFile)
+var DefaultOptions, _ = parseOptions(defaultConfigFile)
 
 func parseOptions(s string) (Options, error) {
 	o := Options{
