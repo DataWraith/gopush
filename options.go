@@ -246,9 +246,10 @@ instruction NAME.YANKDUP
 `
 
 // DefaultOptions contains the default configuration for a Push Interpreter.
-var DefaultOptions, _ = parseOptions(defaultConfigFile)
+var DefaultOptions, _ = ParseOptions(defaultConfigFile)
 
-func parseOptions(s string) (Options, error) {
+// ParseOptions parses the given string into the Options struct.
+func ParseOptions(s string) (Options, error) {
 	o := Options{
 		AllowedInstructions:         make(map[string]struct{}),
 		AllowedTypes:                make(map[string]struct{}),
@@ -421,7 +422,8 @@ func parseOptions(s string) (Options, error) {
 	return o, nil
 }
 
-// ReadOptions reads the options from the given reader
+// ReadOptions reads a configuration file from the given io.Reader and returns
+// the corresponding Options struct
 func ReadOptions(r io.Reader) (Options, error) {
 	b, err := ioutil.ReadAll(r)
 	if err != nil {
@@ -430,7 +432,23 @@ func ReadOptions(r io.Reader) (Options, error) {
 
 	s := string(b)
 
-	o, err := parseOptions(s)
+	o, err := ParseOptions(s)
+	if err != nil {
+		return Options{}, err
+	}
+
+	return o, nil
+}
+
+// ReadOptionsFromFile reads the given configuration file and returns the
+// corresponding Options struct
+func ReadOptionsFromFile(filename string) (Options, error) {
+	b, err := ioutil.ReadFile(filename)
+	if err != nil {
+		return Options{}, err
+	}
+
+	o, err := ParseOptions(string(b))
 	if err != nil {
 		return Options{}, err
 	}
