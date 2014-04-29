@@ -271,21 +271,16 @@ func (i *Interpreter) runCode(program Code) (err error) {
 	return nil
 }
 
-// Run runs the given program written in the Push programming language until the
-// EvalPushLimit is reached
-func (i *Interpreter) Run(program string) error {
-	c, err := ParseCode(program)
-	if err != nil {
-		return err
-	}
-
+// RunCode runs the given program (given as Code type) until the EvalPushLimit
+// is reached
+func (i *Interpreter) RunCode(c Code) error {
 	if i.Options.TopLevelPushCode {
 		if s, ok := i.Stacks["code"]; ok {
 			s.Push(c)
 		}
 	}
 
-	err = i.runCode(c)
+	err := i.runCode(c)
 
 	if i.Options.TopLevelPopCode {
 		if s, ok := i.Stacks["code"]; ok {
@@ -296,6 +291,19 @@ func (i *Interpreter) Run(program string) error {
 	if i.Options.Tracing {
 		i.printInterpreterState()
 	}
+
+	return err
+}
+
+// Run runs the given program written in the Push programming language until the
+// EvalPushLimit is reached
+func (i *Interpreter) Run(program string) error {
+	c, err := ParseCode(program)
+	if err != nil {
+		return err
+	}
+
+	err = i.RunCode(c)
 
 	return err
 }
