@@ -1,10 +1,8 @@
 package gopush
 
-type Instruction func()
-
 type Stack struct {
 	Stack     []interface{}
-	Functions map[string]Instruction
+	Functions map[string]func()
 }
 
 func (s Stack) Peek() interface{} {

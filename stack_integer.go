@@ -4,7 +4,7 @@ import "fmt"
 
 func newIntStack(interpreter *Interpreter) *Stack {
 	s := &Stack{
-		Functions: make(map[string]Instruction),
+		Functions: make(map[string]func()),
 	}
 
 	s.Functions["%"] = func() {

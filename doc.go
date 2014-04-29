@@ -12,7 +12,7 @@ You can provide custom data types and associated behavior by implementing a new
 Stack object:
 
 	printStack := &gopush.Stack{
-		Functions: make(map[string]gopush.Instruction)
+		Functions: make(map[string]func())
 	}
 
 	printStack.Functions["hello"] = func() {
