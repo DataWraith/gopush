@@ -1,5 +1,3 @@
-// Package gopush provides an implementation of Push 3.0, a stack-based
-// programming language designed for genetic programming
 package gopush
 
 import (
