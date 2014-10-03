@@ -8,7 +8,7 @@ func newIntStack(interpreter *Interpreter) *Stack {
 	}
 
 	s.Functions["%"] = func() {
-		if !interpreter.stackOK("integer", 2) || interpreter.Stacks["integer"].Peek().(int64) == 0 {
+		if !interpreter.StackOK("integer", 2) || interpreter.Stacks["integer"].Peek().(int64) == 0 {
 			return
 		}
 
@@ -24,7 +24,7 @@ func newIntStack(interpreter *Interpreter) *Stack {
 	}
 
 	s.Functions["*"] = func() {
-		if !interpreter.stackOK("integer", 2) {
+		if !interpreter.StackOK("integer", 2) {
 			return
 		}
 
@@ -34,7 +34,7 @@ func newIntStack(interpreter *Interpreter) *Stack {
 	}
 
 	s.Functions["+"] = func() {
-		if !interpreter.stackOK("integer", 2) {
+		if !interpreter.StackOK("integer", 2) {
 			return
 		}
 
@@ -44,7 +44,7 @@ func newIntStack(interpreter *Interpreter) *Stack {
 	}
 
 	s.Functions["-"] = func() {
-		if !interpreter.stackOK("integer", 2) {
+		if !interpreter.StackOK("integer", 2) {
 			return
 		}
 
@@ -54,7 +54,7 @@ func newIntStack(interpreter *Interpreter) *Stack {
 	}
 
 	s.Functions["/"] = func() {
-		if !interpreter.stackOK("integer", 2) || interpreter.Stacks["integer"].Peek().(int64) == 0 {
+		if !interpreter.StackOK("integer", 2) || interpreter.Stacks["integer"].Peek().(int64) == 0 {
 			return
 		}
 
@@ -64,7 +64,7 @@ func newIntStack(interpreter *Interpreter) *Stack {
 	}
 
 	s.Functions["<"] = func() {
-		if !interpreter.stackOK("integer", 2) || !interpreter.stackOK("boolean", 0) {
+		if !interpreter.StackOK("integer", 2) || !interpreter.StackOK("boolean", 0) {
 			return
 		}
 
@@ -74,7 +74,7 @@ func newIntStack(interpreter *Interpreter) *Stack {
 	}
 
 	s.Functions["="] = func() {
-		if !interpreter.stackOK("integer", 2) || !interpreter.stackOK("boolean", 0) {
+		if !interpreter.StackOK("integer", 2) || !interpreter.StackOK("boolean", 0) {
 			return
 		}
 
@@ -84,7 +84,7 @@ func newIntStack(interpreter *Interpreter) *Stack {
 	}
 
 	s.Functions[">"] = func() {
-		if !interpreter.stackOK("integer", 2) || !interpreter.stackOK("boolean", 0) {
+		if !interpreter.StackOK("integer", 2) || !interpreter.StackOK("boolean", 0) {
 			return
 		}
 
@@ -94,7 +94,7 @@ func newIntStack(interpreter *Interpreter) *Stack {
 	}
 
 	s.Functions["define"] = func() {
-		if !interpreter.stackOK("name", 1) || !interpreter.stackOK("integer", 1) {
+		if !interpreter.StackOK("name", 1) || !interpreter.StackOK("integer", 1) {
 			return
 		}
 
@@ -113,7 +113,7 @@ func newIntStack(interpreter *Interpreter) *Stack {
 	}
 
 	s.Functions["fromboolean"] = func() {
-		if !interpreter.stackOK("boolean", 1) {
+		if !interpreter.StackOK("boolean", 1) {
 			return
 		}
 
@@ -126,7 +126,7 @@ func newIntStack(interpreter *Interpreter) *Stack {
 	}
 
 	s.Functions["fromfloat"] = func() {
-		if !interpreter.stackOK("float", 1) {
+		if !interpreter.StackOK("float", 1) {
 			return
 		}
 
@@ -135,7 +135,7 @@ func newIntStack(interpreter *Interpreter) *Stack {
 	}
 
 	s.Functions["max"] = func() {
-		if !interpreter.stackOK("integer", 2) {
+		if !interpreter.StackOK("integer", 2) {
 			return
 		}
 
@@ -150,7 +150,7 @@ func newIntStack(interpreter *Interpreter) *Stack {
 	}
 
 	s.Functions["min"] = func() {
-		if !interpreter.stackOK("integer", 2) {
+		if !interpreter.StackOK("integer", 2) {
 			return
 		}
 
@@ -180,7 +180,7 @@ func newIntStack(interpreter *Interpreter) *Stack {
 	}
 
 	s.Functions["shove"] = func() {
-		if !interpreter.stackOK("integer", 2) {
+		if !interpreter.StackOK("integer", 2) {
 			return
 		}
 
@@ -200,7 +200,7 @@ func newIntStack(interpreter *Interpreter) *Stack {
 	}
 
 	s.Functions["yank"] = func() {
-		if !interpreter.stackOK("integer", 2) {
+		if !interpreter.StackOK("integer", 2) {
 			return
 		}
 
@@ -209,7 +209,7 @@ func newIntStack(interpreter *Interpreter) *Stack {
 	}
 
 	s.Functions["yankdup"] = func() {
-		if !interpreter.stackOK("integer", 2) {
+		if !interpreter.StackOK("integer", 2) {
 			return
 		}
 

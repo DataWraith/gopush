@@ -12,7 +12,7 @@ func newCodeStack(interpreter *Interpreter) *Stack {
 	}
 
 	s.Functions["="] = func() {
-		if !interpreter.stackOK("code", 2) || !interpreter.stackOK("boolean", 0) {
+		if !interpreter.StackOK("code", 2) || !interpreter.StackOK("boolean", 0) {
 			return
 		}
 
@@ -27,7 +27,7 @@ func newCodeStack(interpreter *Interpreter) *Stack {
 	}
 
 	s.Functions["append"] = func() {
-		if !interpreter.stackOK("code", 2) {
+		if !interpreter.StackOK("code", 2) {
 			return
 		}
 
@@ -50,7 +50,7 @@ func newCodeStack(interpreter *Interpreter) *Stack {
 	}
 
 	s.Functions["atom"] = func() {
-		if !interpreter.stackOK("code", 1) || !interpreter.stackOK("boolean", 0) {
+		if !interpreter.StackOK("code", 1) || !interpreter.StackOK("boolean", 0) {
 			return
 		}
 
@@ -64,7 +64,7 @@ func newCodeStack(interpreter *Interpreter) *Stack {
 	}
 
 	s.Functions["car"] = func() {
-		if !interpreter.stackOK("code", 1) {
+		if !interpreter.StackOK("code", 1) {
 			return
 		}
 
@@ -78,7 +78,7 @@ func newCodeStack(interpreter *Interpreter) *Stack {
 	}
 
 	s.Functions["cdr"] = func() {
-		if !interpreter.stackOK("code", 1) {
+		if !interpreter.StackOK("code", 1) {
 			return
 		}
 
@@ -96,7 +96,7 @@ func newCodeStack(interpreter *Interpreter) *Stack {
 	}
 
 	s.Functions["cons"] = func() {
-		if !interpreter.stackOK("code", 2) {
+		if !interpreter.StackOK("code", 2) {
 			return
 		}
 
@@ -120,7 +120,7 @@ func newCodeStack(interpreter *Interpreter) *Stack {
 	}
 
 	s.Functions["container"] = func() {
-		if !interpreter.stackOK("code", 2) {
+		if !interpreter.StackOK("code", 2) {
 			return
 		}
 
@@ -132,7 +132,7 @@ func newCodeStack(interpreter *Interpreter) *Stack {
 	}
 
 	s.Functions["contains"] = func() {
-		if !interpreter.stackOK("code", 2) || !interpreter.stackOK("boolean", 0) {
+		if !interpreter.StackOK("code", 2) || !interpreter.StackOK("boolean", 0) {
 			return
 		}
 
@@ -143,7 +143,7 @@ func newCodeStack(interpreter *Interpreter) *Stack {
 	}
 
 	s.Functions["define"] = func() {
-		if !interpreter.stackOK("name", 1) || !interpreter.stackOK("code", 1) {
+		if !interpreter.StackOK("name", 1) || !interpreter.StackOK("code", 1) {
 			return
 		}
 
@@ -154,7 +154,7 @@ func newCodeStack(interpreter *Interpreter) *Stack {
 	}
 
 	s.Functions["definition"] = func() {
-		if !interpreter.stackOK("name", 1) {
+		if !interpreter.StackOK("name", 1) {
 			return
 		}
 
@@ -166,7 +166,7 @@ func newCodeStack(interpreter *Interpreter) *Stack {
 	}
 
 	s.Functions["discrepancy"] = func() {
-		if !interpreter.stackOK("code", 2) || !interpreter.stackOK("integer", 0) {
+		if !interpreter.StackOK("code", 2) || !interpreter.StackOK("integer", 0) {
 			return
 		}
 
@@ -199,7 +199,7 @@ func newCodeStack(interpreter *Interpreter) *Stack {
 	}
 
 	s.Functions["do"] = func() {
-		if !interpreter.stackOK("code", 1) {
+		if !interpreter.StackOK("code", 1) {
 			return
 		}
 
@@ -214,7 +214,7 @@ func newCodeStack(interpreter *Interpreter) *Stack {
 	}
 
 	s.Functions["do*"] = func() {
-		if !interpreter.stackOK("code", 1) {
+		if !interpreter.StackOK("code", 1) {
 			return
 		}
 
@@ -228,7 +228,7 @@ func newCodeStack(interpreter *Interpreter) *Stack {
 	}
 
 	s.Functions["do*count"] = func() {
-		if !interpreter.stackOK("code", 1) || !interpreter.stackOK("integer", 1) {
+		if !interpreter.StackOK("code", 1) || !interpreter.StackOK("integer", 1) {
 			return
 		}
 
@@ -254,7 +254,7 @@ func newCodeStack(interpreter *Interpreter) *Stack {
 	}
 
 	s.Functions["do*range"] = func() {
-		if !interpreter.stackOK("code", 1) || !interpreter.stackOK("integer", 2) {
+		if !interpreter.StackOK("code", 1) || !interpreter.StackOK("integer", 2) {
 			return
 		}
 
@@ -283,7 +283,7 @@ func newCodeStack(interpreter *Interpreter) *Stack {
 	}
 
 	s.Functions["do*times"] = func() {
-		if !interpreter.stackOK("code", 1) || !interpreter.stackOK("integer", 1) {
+		if !interpreter.StackOK("code", 1) || !interpreter.StackOK("integer", 1) {
 			return
 		}
 
@@ -324,7 +324,7 @@ func newCodeStack(interpreter *Interpreter) *Stack {
 	}
 
 	s.Functions["fromboolean"] = func() {
-		if !interpreter.stackOK("boolean", 1) {
+		if !interpreter.StackOK("boolean", 1) {
 			return
 		}
 
@@ -333,7 +333,7 @@ func newCodeStack(interpreter *Interpreter) *Stack {
 	}
 
 	s.Functions["fromfloat"] = func() {
-		if !interpreter.stackOK("float", 1) {
+		if !interpreter.StackOK("float", 1) {
 			return
 		}
 
@@ -346,7 +346,7 @@ func newCodeStack(interpreter *Interpreter) *Stack {
 	}
 
 	s.Functions["frominteger"] = func() {
-		if !interpreter.stackOK("integer", 1) {
+		if !interpreter.StackOK("integer", 1) {
 			return
 		}
 
@@ -355,7 +355,7 @@ func newCodeStack(interpreter *Interpreter) *Stack {
 	}
 
 	s.Functions["fromname"] = func() {
-		if !interpreter.stackOK("name", 1) {
+		if !interpreter.StackOK("name", 1) {
 			return
 		}
 
@@ -364,7 +364,7 @@ func newCodeStack(interpreter *Interpreter) *Stack {
 	}
 
 	s.Functions["if"] = func() {
-		if !interpreter.stackOK("code", 2) || !interpreter.stackOK("boolean", 1) {
+		if !interpreter.StackOK("code", 2) || !interpreter.StackOK("boolean", 1) {
 			return
 		}
 
@@ -399,7 +399,7 @@ func newCodeStack(interpreter *Interpreter) *Stack {
 	}
 
 	s.Functions["length"] = func() {
-		if !interpreter.stackOK("code", 1) || !interpreter.stackOK("integer", 0) {
+		if !interpreter.StackOK("code", 1) || !interpreter.StackOK("integer", 0) {
 			return
 		}
 
@@ -412,7 +412,7 @@ func newCodeStack(interpreter *Interpreter) *Stack {
 	}
 
 	s.Functions["list"] = func() {
-		if !interpreter.stackOK("code", 2) {
+		if !interpreter.StackOK("code", 2) {
 			return
 		}
 
@@ -436,7 +436,7 @@ func newCodeStack(interpreter *Interpreter) *Stack {
 	}
 
 	s.Functions["nth"] = func() {
-		if !interpreter.stackOK("code", 1) || !interpreter.stackOK("integer", 1) {
+		if !interpreter.StackOK("code", 1) || !interpreter.StackOK("integer", 1) {
 			return
 		}
 
@@ -461,7 +461,7 @@ func newCodeStack(interpreter *Interpreter) *Stack {
 	}
 
 	s.Functions["nthcdr"] = func() {
-		if !interpreter.stackOK("code", 1) || !interpreter.stackOK("integer", 1) {
+		if !interpreter.StackOK("code", 1) || !interpreter.StackOK("integer", 1) {
 			return
 		}
 
@@ -491,7 +491,7 @@ func newCodeStack(interpreter *Interpreter) *Stack {
 	}
 
 	s.Functions["null"] = func() {
-		if !interpreter.stackOK("code", 1) || !interpreter.stackOK("boolean", 0) {
+		if !interpreter.StackOK("code", 1) || !interpreter.StackOK("boolean", 0) {
 			return
 		}
 
@@ -508,7 +508,7 @@ func newCodeStack(interpreter *Interpreter) *Stack {
 	}
 
 	s.Functions["quote"] = func() {
-		if !interpreter.stackOK("exec", 1) {
+		if !interpreter.StackOK("exec", 1) {
 			return
 		}
 
@@ -517,7 +517,7 @@ func newCodeStack(interpreter *Interpreter) *Stack {
 	}
 
 	s.Functions["rand"] = func() {
-		if !interpreter.stackOK("integer", 1) {
+		if !interpreter.StackOK("integer", 1) {
 			return
 		}
 
@@ -539,7 +539,7 @@ func newCodeStack(interpreter *Interpreter) *Stack {
 	}
 
 	s.Functions["shove"] = func() {
-		if !interpreter.stackOK("code", 1) || !interpreter.stackOK("integer", 1) {
+		if !interpreter.StackOK("code", 1) || !interpreter.StackOK("integer", 1) {
 			return
 		}
 
@@ -550,7 +550,7 @@ func newCodeStack(interpreter *Interpreter) *Stack {
 	}
 
 	s.Functions["size"] = func() {
-		if !interpreter.stackOK("code", 1) || !interpreter.stackOK("integer", 0) {
+		if !interpreter.StackOK("code", 1) || !interpreter.StackOK("integer", 0) {
 			return
 		}
 
@@ -559,7 +559,7 @@ func newCodeStack(interpreter *Interpreter) *Stack {
 	}
 
 	s.Functions["stackdepth"] = func() {
-		if !interpreter.stackOK("integer", 0) {
+		if !interpreter.StackOK("integer", 0) {
 			return
 		}
 
@@ -575,7 +575,7 @@ func newCodeStack(interpreter *Interpreter) *Stack {
 	}
 
 	s.Functions["yank"] = func() {
-		if !interpreter.stackOK("integer", 1) || !interpreter.stackOK("code", 1) {
+		if !interpreter.StackOK("integer", 1) || !interpreter.StackOK("code", 1) {
 			return
 		}
 
@@ -584,7 +584,7 @@ func newCodeStack(interpreter *Interpreter) *Stack {
 	}
 
 	s.Functions["yankdup"] = func() {
-		if !interpreter.stackOK("integer", 1) || !interpreter.stackOK("code", 1) {
+		if !interpreter.StackOK("integer", 1) || !interpreter.StackOK("code", 1) {
 			return
 		}
 

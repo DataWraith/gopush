@@ -140,7 +140,7 @@ func (i *Interpreter) randomInstruction() Code {
 	return Code{Length: 1, Literal: instr}
 }
 
-func (i *Interpreter) stackOK(name string, mindepth int64) bool {
+func (i *Interpreter) StackOK(name string, mindepth int64) bool {
 	s, ok := i.Stacks[name]
 	if !ok {
 		return false
@@ -206,7 +206,7 @@ func (i *Interpreter) runCode(program Code) (err error) {
 
 		// Try to parse the item on top of the exec stack as a literal
 		if intlit, err := strconv.ParseInt(item.Literal, 10, 64); err == nil {
-			if !i.stackOK("integer", 0) {
+			if !i.StackOK("integer", 0) {
 				return fmt.Errorf("found integer literal %v, but the integer stack is disabled", intlit)
 			}
 			i.Stacks["integer"].Push(intlit)
@@ -214,7 +214,7 @@ func (i *Interpreter) runCode(program Code) (err error) {
 		}
 
 		if floatlit, err := strconv.ParseFloat(item.Literal, 64); err == nil {
-			if !i.stackOK("float", 0) {
+			if !i.StackOK("float", 0) {
 				return fmt.Errorf("found float literal %v, but the float stack is disabled", floatlit)
 			}
 			i.Stacks["float"].Push(floatlit)
@@ -222,7 +222,7 @@ func (i *Interpreter) runCode(program Code) (err error) {
 		}
 
 		if boollit, err := strconv.ParseBool(item.Literal); err == nil {
-			if !i.stackOK("boolean", 0) {
+			if !i.StackOK("boolean", 0) {
 				return fmt.Errorf("found boolean literal %v, but the boolean stack is disabled", boollit)
 			}
 			i.Stacks["boolean"].Push(boollit)

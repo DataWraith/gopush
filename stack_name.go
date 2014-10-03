@@ -9,7 +9,7 @@ func newNameStack(interpreter *Interpreter) *Stack {
 	}
 
 	s.Functions["="] = func() {
-		if !interpreter.stackOK("name", 2) || !interpreter.stackOK("boolean", 0) {
+		if !interpreter.StackOK("name", 2) || !interpreter.StackOK("boolean", 0) {
 			return
 		}
 
@@ -51,7 +51,7 @@ func newNameStack(interpreter *Interpreter) *Stack {
 	}
 
 	s.Functions["shove"] = func() {
-		if !interpreter.stackOK("name", 1) || !interpreter.stackOK("integer", 1) {
+		if !interpreter.StackOK("name", 1) || !interpreter.StackOK("integer", 1) {
 			return
 		}
 
@@ -62,7 +62,7 @@ func newNameStack(interpreter *Interpreter) *Stack {
 	}
 
 	s.Functions["stackdepth"] = func() {
-		if !interpreter.stackOK("integer", 0) {
+		if !interpreter.StackOK("integer", 0) {
 			return
 		}
 
@@ -74,7 +74,7 @@ func newNameStack(interpreter *Interpreter) *Stack {
 	}
 
 	s.Functions["yank"] = func() {
-		if !interpreter.stackOK("integer", 1) || !interpreter.stackOK("name", 1) {
+		if !interpreter.StackOK("integer", 1) || !interpreter.StackOK("name", 1) {
 			return
 		}
 
@@ -83,7 +83,7 @@ func newNameStack(interpreter *Interpreter) *Stack {
 	}
 
 	s.Functions["yankdup"] = func() {
-		if !interpreter.stackOK("integer", 1) || !interpreter.stackOK("name", 1) {
+		if !interpreter.StackOK("integer", 1) || !interpreter.StackOK("name", 1) {
 			return
 		}
 
