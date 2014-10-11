@@ -140,6 +140,9 @@ func (i *Interpreter) randomInstruction() Code {
 	return Code{Length: 1, Literal: instr}
 }
 
+// StackOK verifies that the given stack exists and has at least `mindepth`
+// elements on it. This is used in stack functions to check if enough operands
+// are available to carry out an instruction.
 func (i *Interpreter) StackOK(name string, mindepth int64) bool {
 	s, ok := i.Stacks[name]
 	if !ok {
