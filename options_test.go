@@ -61,6 +61,9 @@ var optionParseErrorTests = []struct {
 	{"max-points-in-program -7", "MAX-POINTS-IN-PROGRAM must be at least 1, got -7"},
 	{"evalpush-limit -7", "EVALPUSH-LIMIT must be at least 1, got -7"},
 	{"new-erc-name-probability 1.1", "NEW-ERC-NAME-PROBABILITY must be between 0 and 1 inclusive, got 1.1"},
+
+	{"min-random-integer 10\nmax-random-integer 0", "MIN-RANDOM-INTEGER (10) must be less than or equal to MAX-RANDOM-INTEGER (0)"},
+	{"min-random-float 1.0\nmax-random-float 0.5", "MIN-RANDOM-FLOAT (1) must be less than or equal to MAX-RANDOM-FLOAT (0.5)"},
 }
 
 func TestParseErrors(t *testing.T) {

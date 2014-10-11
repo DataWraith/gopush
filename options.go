@@ -428,6 +428,14 @@ func ParseOptions(s string) (Options, error) {
 		}
 	}
 
+	if o.MinRandomInteger > o.MaxRandomInteger {
+		return Options{}, fmt.Errorf("MIN-RANDOM-INTEGER (%v) must be less than or equal to MAX-RANDOM-INTEGER (%v)", o.MinRandomInteger, o.MaxRandomInteger)
+	}
+
+	if o.MinRandomFloat > o.MaxRandomFloat {
+		return Options{}, fmt.Errorf("MIN-RANDOM-FLOAT (%v) must be less than or equal to MAX-RANDOM-FLOAT (%v)", o.MinRandomFloat, o.MaxRandomFloat)
+	}
+
 	return o, nil
 }
 
