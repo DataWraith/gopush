@@ -522,6 +522,11 @@ func newCodeStack(interpreter *Interpreter) *Stack {
 		}
 
 		maxPoints := interpreter.Stacks["integer"].Pop().(int64)
+
+		if maxPoints == 0 {
+			return
+		}
+
 		if maxPoints < 0 {
 			maxPoints *= -1
 		}
