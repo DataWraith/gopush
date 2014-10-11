@@ -328,7 +328,7 @@ func ParseOptions(s string) (Options, error) {
 			if err != nil {
 				return Options{}, fmt.Errorf("could not parse %q as integer", setting)
 			}
-			o.MinRandomInteger = i
+			o.MaxRandomInteger = i
 
 		case "min-random-float":
 			f, err := strconv.ParseFloat(setting, 64)
