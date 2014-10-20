@@ -41,7 +41,13 @@ func newNameStack(interpreter *Interpreter) *Stack {
 	}
 
 	s.Functions["randboundname"] = func() {
-		idx := interpreter.Rand.Intn(len(interpreter.listOfDefinitions))
+		l := len(interpreter.listOfDefinitions)
+
+		if l == 0 {
+			return
+		}
+
+		idx := interpreter.Rand.Intn(l)
 		randName := interpreter.listOfDefinitions[idx]
 		interpreter.Stacks["name"].Push(randName)
 	}
